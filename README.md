@@ -1,17 +1,25 @@
 Mojaloop Testing Toolkit Client Library and Tools
 =================================================
 
-The **Mojaloop Testing Toolkit CLI** is a command line client for connecting to "Mojaloop Testing Toolkit" instead of using web interface.
+This package is intended to provide various clients and tools to connect with **Mojaloop Testing Toolkit** instead of using web interface.
 
-For additional back ground information on the Self Testing Toolkit, please see [Mojaloop Testing Toolkit](/documents/Mojaloop-Testing-Toolkit.md). It would be to the particpant's benefit to familiarise themselves with the understanding of the  [Architecture Diagram](/documents/MojaloopÂ-Testing-Tool.md#7-architecture) that explains the various components and related flows.
+For additional back ground information on the `Mojaloop Testing Toolkit`, please see [Mojaloop Testing Toolkit Documentation](https://github.com/mojaloop/ml-testing-toolkit/blob/master/documents/User-Guide.md). It would be to the particpant's benefit to familiarise themselves with the understanding of the  [Architecture Diagram](https://github.com/mojaloop/ml-testing-toolkit/blob/master/documents/Mojaloop-Testing-Toolkit.md#7-architecture) that explains the various components and related flows.
 
+## Testing Toolkit Command Line Client
+
+The **Mojaloop Testing Toolkit CLI** is a command line client for connecting to "Mojaloop Testing Toolkit" to perform various operations (Mainly to execute test cases). It can be used in automation systems like CICD and IaC.
 
 **Table of Contents**
 
 1. [Getting Started](#1-getting-started)
-2. [The Mojaloop Testing Toolkit CLI](#2-the-mojaloop-testing-toolkit)
 
-    2.1. [Help screen](#21-at-first-glance)
+    1.1. [Installation](#11-installation)
+
+    1.2. [Usage](#12-usage) 
+
+2. [Command Reference](#2-command-reference)
+
+    2.1. [Help screen](#21-help-screen)
 
     2.2. [Monitoring Mode](#22-monitoring-mode)
 
@@ -23,9 +31,32 @@ For additional back ground information on the Self Testing Toolkit, please see [
 
 ### 1. Getting Started
 
-To get started, please follow the instructions in the [README](/README.md) document. This document covers the use-cases with the **Mojaloop Simulator**.
+#### 1.1 Installation
 
-### 2. CLI
+The easiest way to use `Testing Toolkit Command Line Client` is to install it globally as a
+Node command line program. Run the following command in Terminal:
+
+```bash
+npm install @mojaloop/ml-testing-toolkit-client-lib --global
+```
+
+Or, you can install `@mojaloop/ml-testing-toolkit-client-lib` locally, for use in a single project:
+
+```bash
+npm install @mojaloop/ml-testing-toolkit-client-lib --save-dev
+```
+
+*Note: To run the preceding commands, [Node.js](http://nodejs.org) and [npm](https://npmjs.com) must be installed.*
+
+#### 1.2 Usage
+
+After you've installed `@mojaloop/ml-testing-toolkit-client-lib`, you should be able to use the following command.
+```
+ml-ttk-cli
+```
+**_If this command is not found, you should add the folder path of npm global modules to your PATH._
+
+### 2. Command Reference
 
 #### 2.1 Help screen
 
@@ -34,7 +65,7 @@ The help screen allows you to see the usage, possible options and default values
 command: 
 
 ```
-node src/client -h
+ml-ttk-cli -h
 ```
 
 output:
@@ -67,7 +98,7 @@ Example:
 command:
 
 ```
-node src/client -m monitoring
+ml-ttk-cli -m monitoring
 ```
 
 output:
@@ -137,7 +168,7 @@ The CLI tool is able to return the proper exit codes in case of success and fail
 command:
 
 ```
-node src/client -m outbound -i examples/collections/dfsp/p2p_happy_path.json -e examples/environments/dfsp_local_environment.json --report-format html
+ml-ttk-cli -m outbound -i examples/collections/dfsp/p2p_happy_path.json -e examples/environments/dfsp_local_environment.json --report-format html
 ```
 
 output:
@@ -196,7 +227,7 @@ To use AWS S3 service, the following environment variables should be set with pr
 Example Command:
 
 ```
-node src/client -m outbound -i examples/collections/dfsp/p2p_happy_path.json -e examples/environments/dfsp_local_environment.json --report-format html --report-auto-filename-enable true --report-target s3://qa-reports-bucket/reports-folder/report-name.html
+ml-ttk-cli -m outbound -i examples/collections/dfsp/p2p_happy_path.json -e examples/environments/dfsp_local_environment.json --report-format html --report-auto-filename-enable true --report-target s3://qa-reports-bucket/reports-folder/report-name.html
 ```
 
 #### 2.5 Slack Notification
@@ -209,5 +240,5 @@ If the S3 option is also set, then a link to the uploaded report will be sent in
 Example Command:
 
 ```
-node src/client -m outbound -i examples/collections/dfsp/p2p_happy_path.json -e examples/environments/dfsp_local_environment.json --slack-webhook-url=https://hooks.slack.com/services/blablabla...
+ml-ttk-cli -m outbound -i examples/collections/dfsp/p2p_happy_path.json -e examples/environments/dfsp_local_environment.json --slack-webhook-url=https://hooks.slack.com/services/blablabla...
 ```
