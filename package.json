@@ -102,7 +102,7 @@
     "jest-junit": "^13.0.0",
     "jsdoc": "^3.6.10",
     "nodemon": "^2.0.13",
-    "npm-audit-resolver": "^2.3.1",
+    "npm-audit-resolver": "3.0.0-7",
     "npm-check-updates": "11.3.0",
     "nyc": "^15.0.0",
     "parse-strings-in-object": "1.2.0",

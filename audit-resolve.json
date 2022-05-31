@@ -1,0 +1,14 @@
+{
+  "decisions": {
+    "1067560|swagmock>swagger-parser>z-schema>validator": {
+      "decision": "postpone",
+      "madeAt": 1653992416102
+    },
+    "1068118|socket.io>engine.io": {
+      "decision": "postpone",
+      "madeAt": 1653992430065
+    }
+  },
+  "rules": {},
+  "version": 1
+}
