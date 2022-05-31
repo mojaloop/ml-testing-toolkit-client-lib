@@ -107,7 +107,7 @@ const printProgress = (progress) => {
     // Only Requests and test counts
     default:
       printTotalProgressCounts()
-      console.log('\t' + fStr.blue(progress.testCaseName + ' -> ' + progress.requestSent.description))
+      console.log('\t' + fStr.blue(progress.testCaseName + ' -> ' + progress.requestSent?.description))
       break
   }
 }
