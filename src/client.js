@@ -21,10 +21,10 @@
  * Georgi Logodazhki <georgi.logodazhki@modusbox.com> (Original Author)
  --------------
  ******/
-const commander = require('commander')
+const { program } = require('commander')
 const router = require('./router')
 
-commander
+program
   .version('1.0.0', '-v, --version')
   .option('-c, --config <config>', 'default configuration: {"mode": "outbound", "reportFormat": "json"}')
   .option('-m, --mode <mode>', 'default: "outbound" --- supported modes: "monitoring", "outbound", "testcaseDefinitionReport"')
@@ -46,4 +46,4 @@ commander
   })
   .parse(process.argv)
 
-router.cli(commander)
+router.cli(program.opts())

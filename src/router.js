@@ -28,7 +28,7 @@ const { TraceHeaderUtils } = require('@mojaloop/ml-testing-toolkit-shared-lib')
 
 const TESTS_EXECUTION_TIMEOUT = 1000 * 60 * 15 // 15min timout
 
-const cli = (commander) => {
+const cli = (commanderOptions) => {
   const configFile = {
     mode: 'outbound',
     reportFormat: 'json',
@@ -38,26 +38,26 @@ const cli = (commander) => {
     breakRunOnError: false
   }
 
-  if (fs.existsSync(commander.config)) {
-    const newConfig = JSON.parse(fs.readFileSync(commander.config, 'utf8'))
+  if (fs.existsSync(commanderOptions.config)) {
+    const newConfig = JSON.parse(fs.readFileSync(commanderOptions.config, 'utf8'))
     _.merge(configFile, newConfig)
   }
 
   const config = {
-    mode: commander.mode || configFile.mode,
-    inputFiles: commander.inputFiles,
-    logLevel: commander.logLevel || configFile.logLevel,
-    breakRunOnError: commander.breakRunOnError || configFile.breakRunOnError,
-    environmentFile: commander.environmentFile,
-    reportFormat: commander.reportFormat || configFile.reportFormat,
-    reportAutoFilenameEnable: commander.reportAutoFilenameEnable === 'true' || configFile.reportAutoFilenameEnable === true,
-    reportTarget: commander.reportTarget || configFile.reportTarget,
-    slackWebhookUrl: commander.slackWebhookUrl || configFile.slackWebhookUrl,
+    mode: commanderOptions.mode || configFile.mode,
+    inputFiles: commanderOptions.inputFiles,
+    logLevel: commanderOptions.logLevel || configFile.logLevel,
+    breakRunOnError: commanderOptions.breakRunOnError || configFile.breakRunOnError,
+    environmentFile: commanderOptions.environmentFile,
+    reportFormat: commanderOptions.reportFormat || configFile.reportFormat,
+    reportAutoFilenameEnable: commanderOptions.reportAutoFilenameEnable === 'true' || configFile.reportAutoFilenameEnable === true,
+    reportTarget: commanderOptions.reportTarget || configFile.reportTarget,
+    slackWebhookUrl: commanderOptions.slackWebhookUrl || configFile.slackWebhookUrl,
     slackPassedImage: configFile.slackPassedImage,
     slackFailedImage: configFile.slackFailedImage,
-    baseURL: commander.baseUrl || configFile.baseURL,
-    extraSummaryInformation: commander.extraSummaryInformation || configFile.extraSummaryInformation,
-    labels: commander.labels || configFile.labels
+    baseURL: commanderOptions.baseUrl || configFile.baseURL,
+    extraSummaryInformation: commanderOptions.extraSummaryInformation || configFile.extraSummaryInformation,
+    labels: commanderOptions.labels || configFile.labels
   }
 
   objectStore.set('config', config)
@@ -88,7 +88,7 @@ const cli = (commander) => {
       break
     case 'testcaseDefinitionReport':
       if (config.inputFiles) {
-        if (!commander.reportFormat) {
+        if (!commanderOptions.reportFormat) {
           config.reportFormat = 'printhtml'
           objectStore.set('config', config)
         }
