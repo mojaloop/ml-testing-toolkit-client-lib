@@ -31,7 +31,7 @@ const TESTS_EXECUTION_TIMEOUT = 1000 * 60 * 15 // 15min timout
 const cli = (commanderOptions) => {
   const configFile = {
     mode: 'outbound',
-    reportFormat: 'json',
+    reportFormat: 'none',
     baseURL: 'http://localhost:5050',
     logLevel: '0',
     reportAutoFilenameEnable: false,

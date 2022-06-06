@@ -44,6 +44,8 @@ const report = async (data, reportType) => {
   let reportData
   let reportFilename
   switch (config.reportFormat) {
+    case 'none':
+      return returnInfo
     case 'json':
       reportData = JSON.stringify(data, null, 2)
       reportFilename = `${data.name}-${data.runtimeInformation.completedTimeISO}.json`
