@@ -16,10 +16,13 @@ FROM node:16.15.0-alpine
 WORKDIR /opt/app
 
 # Create a non-root user: ml-user
-RUN adduser -D ml-user 
-USER ml-user
+RUN adduser -D ml-user
 
 COPY --chown=ml-user --from=builder /opt/app .
+RUN chown ml-user:ml-user /opt/app
+
+USER ml-user
+
 RUN npm prune --production
 
 CMD ["npm", "run", "cli"]
