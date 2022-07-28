@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.0.0](https://github.com/mojaloop/ml-testing-toolkit-client-lib/compare/v0.0.6...v1.0.0) (2022-07-28)
+
+
+### ⚠ BREAKING CHANGES
+
+* Major version bump for node v16 LTS support.
+
+Major version bump since this is a big upgrade.
+
+* updated shared lib ([#1](https://github.com/mojaloop/ml-testing-toolkit-client-lib/issues/1)) ([f85fb61](https://github.com/mojaloop/ml-testing-toolkit-client-lib/commit/f85fb616955f54ba0463acac374976fa430f35d5)), closes [#2092](https://github.com/mojaloop/ml-testing-toolkit-client-lib/issues/2092)
+
 ### [0.0.6](https://github.com/mojaloop/ml-testing-toolkit-client-lib/compare/v0.0.5...v0.0.6) (2022-06-06)
 
 
