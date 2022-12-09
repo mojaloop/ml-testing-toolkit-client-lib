@@ -35,7 +35,9 @@ const cli = (commanderOptions) => {
     baseURL: 'http://localhost:5050',
     logLevel: '0',
     reportAutoFilenameEnable: false,
-    breakRunOnError: false
+    breakRunOnError: false,
+    saveReport: false,
+    saveReportBaseUrl: null
   }
 
   if (fs.existsSync(commanderOptions.config)) {
@@ -48,6 +50,8 @@ const cli = (commanderOptions) => {
     inputFiles: commanderOptions.inputFiles,
     logLevel: commanderOptions.logLevel || configFile.logLevel,
     breakRunOnError: commanderOptions.breakRunOnError || configFile.breakRunOnError,
+    saveReport: commanderOptions.saveReport || configFile.saveReport,
+    saveReportBaseUrl: commanderOptions.saveReportBaseUrl || configFile.saveReportBaseUrl,
     environmentFile: commanderOptions.environmentFile,
     reportFormat: commanderOptions.reportFormat || configFile.reportFormat,
     reportAutoFilenameEnable: commanderOptions.reportAutoFilenameEnable === 'true' || configFile.reportAutoFilenameEnable === true,
