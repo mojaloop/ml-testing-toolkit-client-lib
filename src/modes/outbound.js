@@ -157,7 +157,7 @@ const handleIncomingProgress = async (progress) => {
       // SaveReport status
       if (progress.totalResult.saveReport) {
         if (progress.saveReportStatus?.isSaved) {
-          const ttkReportUrl = `${config.saveReportBaseUrl || config.baseURL}/api/history/reports/${progress.totalResult.runtimeInformation.testReportId}?format=html`
+          const ttkReportUrl = `${config.saveReportBaseUrl || config.baseURL}/api/history/test-reports/${progress.totalResult.runtimeInformation.testReportId}?format=html`
           console.log(fStr.green(`Report saved on TTK backend server successfully and is available at ${ttkReportUrl}`))
           if (!resultReport.uploadedReportURL) {
             resultReport.uploadedReportURL = ttkReportUrl
