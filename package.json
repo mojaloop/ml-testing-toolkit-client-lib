@@ -66,7 +66,7 @@
     "@mojaloop/sdk-standard-components": "17.1.1",
     "@slack/webhook": "^6.1.0",
     "atob": "2.1.2",
-    "aws-sdk": "^2.1272.0",
+    "aws-sdk": "^2.1273.0",
     "axios": "^1.2.1",
     "cli-table3": "0.6.3",
     "commander": "9.4.1",
