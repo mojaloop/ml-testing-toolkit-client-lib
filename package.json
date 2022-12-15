@@ -92,7 +92,7 @@
     "parse-strings-in-object": "1.6.0",
     "pre-commit": "1.2.2",
     "replace": "^1.2.2",
-    "sinon": "15.0.0",
+    "sinon": "15.0.1",
     "standard": "^17.0.0",
     "standard-version": "^9.5.0"
   },
