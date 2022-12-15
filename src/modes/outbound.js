@@ -126,6 +126,7 @@ const sendTemplate = async (sessionId) => {
     const selectedLabels = config.labels ? config.labels.split(',') : []
     const template = await TemplateGenerator.generateTemplate(inputFiles, selectedLabels)
     template.inputValues = JSON.parse(await readFileAsync(config.environmentFile, 'utf8')).inputValues
+    template.saveReport = config.saveReport
 
     template.test_cases.forEach(testCase => {
       totalProgress.totalTestCases++
@@ -147,11 +148,24 @@ const sendTemplate = async (sessionId) => {
 }
 
 const handleIncomingProgress = async (progress) => {
+  const config = objectStore.get('config')
   if (progress.status === 'FINISHED') {
     let passed
     try {
       passed = logger.outbound(progress.totalResult)
       const resultReport = await report.outbound(progress.totalResult)
+      // SaveReport status
+      if (progress.totalResult.saveReport) {
+        if (progress.saveReportStatus?.isSaved) {
+          const ttkReportUrl = `${config.saveReportBaseUrl || config.baseURL}/api/history/test-reports/${progress.totalResult.runtimeInformation.testReportId}?format=html`
+          console.log(fStr.green(`Report saved on TTK backend server successfully and is available at ${ttkReportUrl}`))
+          if (!resultReport.uploadedReportURL) {
+            resultReport.uploadedReportURL = ttkReportUrl
+          }
+        } else if (progress.saveReportStatus && !progress.saveReportStatus.isSaved) {
+          console.log(fStr.red(`Report not saved: ${progress.saveReportStatus.message}`))
+        }
+      }
       await slackBroadcast.sendSlackNotification(progress.totalResult, resultReport.uploadedReportURL)
     } catch (err) {
       console.log(err)
