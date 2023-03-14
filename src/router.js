@@ -38,7 +38,7 @@ const cli = (commanderOptions) => {
     breakRunOnError: false,
     saveReport: false,
     saveReportBaseUrl: null,
-    reportName: 'multi'
+    reportName: 'test_run'
   }
 
   if (fs.existsSync(commanderOptions.config)) {
