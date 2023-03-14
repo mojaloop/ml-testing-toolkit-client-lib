@@ -127,6 +127,7 @@ const sendTemplate = async (sessionId) => {
     const template = await TemplateGenerator.generateTemplate(inputFiles, selectedLabels)
     template.inputValues = JSON.parse(await readFileAsync(config.environmentFile, 'utf8')).inputValues
     template.saveReport = config.saveReport
+    template.name = config.reportName
 
     template.test_cases.forEach(testCase => {
       totalProgress.totalTestCases++

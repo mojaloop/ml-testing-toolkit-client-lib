@@ -37,7 +37,8 @@ const cli = (commanderOptions) => {
     reportAutoFilenameEnable: false,
     breakRunOnError: false,
     saveReport: false,
-    saveReportBaseUrl: null
+    saveReportBaseUrl: null,
+    reportName: 'multi'
   }
 
   if (fs.existsSync(commanderOptions.config)) {
@@ -52,6 +53,7 @@ const cli = (commanderOptions) => {
     breakRunOnError: commanderOptions.breakRunOnError || configFile.breakRunOnError,
     saveReport: commanderOptions.saveReport || configFile.saveReport,
     saveReportBaseUrl: commanderOptions.saveReportBaseUrl || configFile.saveReportBaseUrl,
+    reportName: commanderOptions.reportName || configFile.reportName,
     environmentFile: commanderOptions.environmentFile,
     reportFormat: commanderOptions.reportFormat || configFile.reportFormat,
     reportAutoFilenameEnable: commanderOptions.reportAutoFilenameEnable === 'true' || configFile.reportAutoFilenameEnable === true,
