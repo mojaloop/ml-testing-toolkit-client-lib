@@ -6,6 +6,7 @@
   "allowlist": [
     // @mojaloop/sdk-standard-components>jsonwebtoken
     "GHSA-hjrf-2m68-5959",
-    "GHSA-qwph-4952-7xr6"
+    "GHSA-qwph-4952-7xr6",
+    "GHSA-8cf7-32gw-wr33"
   ]
 }
