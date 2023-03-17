@@ -60,6 +60,30 @@ const printTotalProgressCounts = () => {
   process.stdout.write(progressStr)
 }
 
+const determineTemplateName = (paths) => {
+  let templateName
+  // Find folders based on string format
+  const folders = paths.filter(x => x.slice((x.lastIndexOf('.') - 1 >>> 0) + 2) === '')
+  const config = objectStore.get('config')
+  if (config.reportName) {
+    templateName = config.reportName
+  } else if (paths.length === 1) {
+    // Sanitize file path for a suitable name
+    templateName = paths[0]
+      .replace(/\.[^/.]+$/, '') // Remove extension
+      .replace(/^.+\.\//, '') // Remove relative paths
+      .replace(/\\|\//g, '_') // Convert path to snake case
+  // Ensure when a single folder is selected that all files belong to that folder
+  } else if (folders.length === 1 && paths.every(filePath => filePath.includes(folders[0]))) {
+    templateName = folders[0]
+      .replace(/^.+\.\//, '') // Remove relative paths
+      .replace(/\\|\//g, '_') // Convert path to snake case
+  } else {
+    templateName = 'test_run'
+  }
+  return templateName
+}
+
 const printProgress = (progress) => {
   const config = objectStore.get('config')
   switch (config.logLevel) {
@@ -127,6 +151,7 @@ const sendTemplate = async (sessionId) => {
     const template = await TemplateGenerator.generateTemplate(inputFiles, selectedLabels)
     template.inputValues = JSON.parse(await readFileAsync(config.environmentFile, 'utf8')).inputValues
     template.saveReport = config.saveReport
+    template.name = determineTemplateName(inputFiles)
 
     template.test_cases.forEach(testCase => {
       totalProgress.totalTestCases++
@@ -189,5 +214,6 @@ const handleIncomingProgress = async (progress) => {
 
 module.exports = {
   sendTemplate,
-  handleIncomingProgress
+  handleIncomingProgress,
+  determineTemplateName
 }

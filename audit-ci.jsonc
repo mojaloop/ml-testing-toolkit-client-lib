@@ -3,5 +3,12 @@
   // audit-ci supports reading JSON, JSONC, and JSON5 config files.
   // Only use one of ["low": true, "moderate": true, "high": true, "critical": true]
   "moderate": true,
-  "allowlist": []
+  "allowlist": [
+    // @mojaloop/sdk-standard-components>jsonwebtoken
+    "GHSA-hjrf-2m68-5959",
+    "GHSA-qwph-4952-7xr6",
+    "GHSA-8cf7-32gw-wr33",
+    // request-promise-native>request-promise-core>request
+    "GHSA-p8p7-x288-28g6"
+  ]
 }

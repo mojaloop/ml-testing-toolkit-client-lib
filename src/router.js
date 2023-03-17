@@ -52,6 +52,7 @@ const cli = (commanderOptions) => {
     breakRunOnError: commanderOptions.breakRunOnError || configFile.breakRunOnError,
     saveReport: commanderOptions.saveReport || configFile.saveReport,
     saveReportBaseUrl: commanderOptions.saveReportBaseUrl || configFile.saveReportBaseUrl,
+    reportName: commanderOptions.reportName,
     environmentFile: commanderOptions.environmentFile,
     reportFormat: commanderOptions.reportFormat || configFile.reportFormat,
     reportAutoFilenameEnable: commanderOptions.reportAutoFilenameEnable === 'true' || configFile.reportAutoFilenameEnable === true,

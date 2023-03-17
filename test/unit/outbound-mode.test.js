@@ -189,4 +189,44 @@ describe('Cli client', () => {
       await expect(outbound.sendTemplate()).resolves.toBe(undefined)
     })
   })
+  describe('run determineTemplateName', () => {
+    it('when determineTemplateName is given a list with a single file it should use the file as the template name', () => {
+      const paths = ['sample-cli.json']
+      const name = outbound.determineTemplateName(paths)
+      expect(name).toBe('sample-cli')
+    })
+    it('when determineTemplateName is given a list with a single file path it converts to snakecase', () => {
+      const paths = ['docs/sample-cli.json']
+      const name = outbound.determineTemplateName(paths)
+      expect(name).toBe('docs_sample-cli')
+    })
+    it('when determineTemplateName is given a list with a relative path it is santitized', () => {
+      const paths = ['../sample-cli.json']
+      const name = outbound.determineTemplateName(paths)
+      expect(name).toBe('sample-cli')
+    })
+    it('when determineTemplateName is given a list with a single folder and the children', () => {
+      const paths = ['docs' , 'docs/sample-cli.json']
+      const name = outbound.determineTemplateName(paths)
+      expect(name).toBe('docs')
+    })
+    it('when determineTemplateName is run with cli flag reportName set the template sets that name', () => {
+      const paths = ['docs' , 'docs/sample-cli.json']
+      const config = {
+        reportName: "my-test-report",
+      }
+      objectStore.set('config', config)
+
+      const name = outbound.determineTemplateName(paths)
+      expect(name).toBe('my-test-report')
+    })
+    it('when determineTemplateName is run with no reportName set and mixture of files and folder paths', () => {
+      const paths = ['docs' , 'docs/sample-cli.json', 'next-test.json']
+      const config = {}
+      objectStore.set('config', config)
+
+      const name = outbound.determineTemplateName(paths)
+      expect(name).toBe('test_run')
+    })
+  })
 })

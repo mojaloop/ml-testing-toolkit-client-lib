@@ -34,6 +34,7 @@ program
   .option('-l, --log-level <logLevel>', 'default: 0 --- supported levels: "0-Show only requests and assertion counts, 1-Show failed assertions only, 2-Show all assertions"')
   .option('-b, --break-run-on-error <breakRunOnError>', 'default: false --- supported values: "false/true"')
   .option('-s, --save-report <saveReport>', 'To save the report on TTK backend server. default: false --- supported values: "false/true"')
+  .option('-n, --report-name <reportName>', 'Specify the name of report on TTK backend server. default: "test_run"')
   .option('--save-report-base-url <saveReportBaseUrl>', 'Incase if the base-url is not accessible publicly, this option replaces the base URL in the report URLs published in console log and slack messages  default: same as base-url. default: same as base-url')
   .option('--labels <labels>', 'csv list of labels, examples: "p2p,settlements,quotes"')
   .option('--report-format <reportFormat>', 'default: "none" --- supported formats: "none", "json", "html", "printhtml"')

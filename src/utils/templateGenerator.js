@@ -52,7 +52,7 @@ const generateTemplate = async (inputFiles, selectedLabels = null) => {
     FolderParser.sequenceTestCases(testCases)
     const template = {}
     template.test_cases = testCases
-    template.name = 'multi'
+    template.name = 'test_run'
     return template
   } catch (err) {
     console.log(err)
