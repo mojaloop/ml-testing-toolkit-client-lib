@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.2.0](https://github.com/mojaloop/ml-testing-toolkit-client-lib/compare/v1.1.1...v1.2.0) (2023-03-17)
+
+
+### Features
+
+* **mojaloop/#3133:** add option to specify report name saved to TTK backend ([#6](https://github.com/mojaloop/ml-testing-toolkit-client-lib/issues/6)) ([8043e4f](https://github.com/mojaloop/ml-testing-toolkit-client-lib/commit/8043e4fb5a94972c8dae7cd6f25b303e5fce275c)), closes [mojaloop/#3133](https://github.com/mojaloop/project/issues/3133)
+
 ### [1.1.1](https://github.com/mojaloop/ml-testing-toolkit-client-lib/compare/v1.1.0...v1.1.1) (2022-12-15)
 
 ## [1.1.0](https://github.com/mojaloop/ml-testing-toolkit-client-lib/compare/v1.0.0...v1.1.0) (2022-12-15)
