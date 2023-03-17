@@ -76,7 +76,6 @@
     "mv": "^2.1.1",
     "node-dir": "0.1.17",
     "node-strings": "^1.0.2",
-    "npm": "^9.6.2",
     "parse-strings-in-object": "1.6.0",
     "path": "^0.12.7",
     "rc": "1.2.8",
