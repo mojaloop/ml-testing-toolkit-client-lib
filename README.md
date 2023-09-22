@@ -3,7 +3,7 @@ Mojaloop Testing Toolkit Client Library and Tools
 
 This package is intended to provide various clients and tools to connect with **Mojaloop Testing Toolkit** instead of using web interface.
 
-For additional back ground information on the `Mojaloop Testing Toolkit`, please see [Mojaloop Testing Toolkit Documentation](https://github.com/mojaloop/ml-testing-toolkit/blob/master/documents/User-Guide.md). It would be to the particpant's benefit to familiarise themselves with the understanding of the  [Architecture Diagram](https://github.com/mojaloop/ml-testing-toolkit/blob/master/documents/Mojaloop-Testing-Toolkit.md#7-architecture) that explains the various components and related flows.
+For additional back ground information on the `Mojaloop Testing Toolkit`, please see [Mojaloop Testing Toolkit Documentation](https://github.com/mojaloop/ml-testing-toolkit/blob/main/documents/User-Guide.md). It would be to the particpant's benefit to familiarise themselves with the understanding of the  [Architecture Diagram](https://github.com/mojaloop/ml-testing-toolkit/blob/main/documents/Mojaloop-Testing-Toolkit.md#7-architecture) that explains the various components and related flows.
 
 ## Testing Toolkit Command Line Client
 
@@ -282,8 +282,8 @@ As part of our CI/CD process, we use a combination of CircleCI, standard-version
 npm package and github-release CircleCI orb to automatically trigger our releases
 and image builds. This process essentially mimics a manual tag and release.
 
-On a merge to master, CircleCI is configured to use the mojaloopci github account
+On a merge to main, CircleCI is configured to use the mojaloopci github account
 to push the latest generated CHANGELOG and package version number.
 
-Once those changes are pushed, CircleCI will pull the updated master, tag and
+Once those changes are pushed, CircleCI will pull the updated main, tag and
 push a release triggering another subsequent build that also publishes a docker image.
