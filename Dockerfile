@@ -27,7 +27,6 @@ RUN npm ci
 RUN apk del build-dependencies
 
 COPY src /opt/app/src
-COPY config /opt/app/config
 
 FROM node:${NODE_VERSION}
 
