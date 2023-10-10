@@ -17,7 +17,7 @@
   },
   "bugs": "https://github.com/mojaloop/ml-testing-toolkit-client-lib/issues",
   "engines": {
-    "node": "=18.x"
+    "node": ">=18.x"
   },
   "config": {},
   "bin": {
