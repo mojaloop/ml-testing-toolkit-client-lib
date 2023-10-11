@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.2.1](https://github.com/mojaloop/ml-testing-toolkit-client-lib/compare/v1.2.0...v1.2.1) (2023-10-11)
+
+
+### Chore
+
+* **mojaloop/#3461:** nodejs upgrade ([#8](https://github.com/mojaloop/ml-testing-toolkit-client-lib/issues/8)) ([8a46fd6](https://github.com/mojaloop/ml-testing-toolkit-client-lib/commit/8a46fd634e42e72c6e0f21d97ecadd4839e17d62)), closes [mojaloop/#3461](https://github.com/mojaloop/project/issues/3461)
+
 ## [1.2.0](https://github.com/mojaloop/ml-testing-toolkit-client-lib/compare/v1.1.1...v1.2.0) (2023-03-17)
 
 
