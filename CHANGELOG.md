@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.2.2](https://github.com/mojaloop/ml-testing-toolkit-client-lib/compare/v1.2.1...v1.2.2) (2024-02-07)
+
+
+### Bug Fixes
+
+* **mojaloop/#3603:** fix permission issues in docker ([#9](https://github.com/mojaloop/ml-testing-toolkit-client-lib/issues/9)) ([d57faa8](https://github.com/mojaloop/ml-testing-toolkit-client-lib/commit/d57faa8dce7b9de286f39981a6e88be5097c2d67))
+
 ### [1.2.1](https://github.com/mojaloop/ml-testing-toolkit-client-lib/compare/v1.2.0...v1.2.1) (2023-10-11)
 
 
