@@ -42,6 +42,8 @@ RUN adduser -D app-user
 USER app-user
 
 COPY --chown=app-user --from=builder /opt/app .
+RUN chown app-user:app-user /opt/app
+
 RUN npm prune --production
 
 CMD ["npm", "run", "cli"]
