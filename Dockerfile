@@ -39,10 +39,11 @@ RUN ln -sf /dev/stdout ./logs/combined.log
 
 # Create a non-root user:app-user
 RUN adduser -D app-user
-USER app-user
 
 COPY --chown=app-user --from=builder /opt/app .
 RUN chown app-user:app-user /opt/app
+
+USER app-user
 
 RUN npm prune --production
 
