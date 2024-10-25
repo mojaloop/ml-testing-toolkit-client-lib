@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.3.0](https://github.com/mojaloop/ml-testing-toolkit-client-lib/compare/v1.2.2...v1.3.0) (2024-10-25)
+
+
+### Features
+
+* transformer implementation ([#11](https://github.com/mojaloop/ml-testing-toolkit-client-lib/issues/11)) ([a61e4d5](https://github.com/mojaloop/ml-testing-toolkit-client-lib/commit/a61e4d56ebf1148eace1c3f938cee50b2fbf8eb4))
+
 ### [1.2.2](https://github.com/mojaloop/ml-testing-toolkit-client-lib/compare/v1.2.1...v1.2.2) (2024-02-07)
 
 
