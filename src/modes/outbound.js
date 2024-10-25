@@ -149,9 +149,12 @@ const sendTemplate = async (sessionId) => {
     const inputFiles = config.inputFiles.split(',')
     const selectedLabels = config.labels ? config.labels.split(',') : []
     const template = await TemplateGenerator.generateTemplate(inputFiles, selectedLabels)
-    template.inputValues = JSON.parse(await readFileAsync(config.environmentFile, 'utf8')).inputValues
+    const environmentFileObj = JSON.parse(await readFileAsync(config.environmentFile, 'utf8'))
+    template.inputValues = environmentFileObj.inputValues
+    template.options = environmentFileObj.options || {}
     template.saveReport = config.saveReport
     template.name = determineTemplateName(inputFiles)
+    template.options.breakOnError = (config.breakRunOnError === 'true')
 
     template.test_cases.forEach(testCase => {
       totalProgress.totalTestCases++
@@ -163,7 +166,6 @@ const sendTemplate = async (sessionId) => {
           totalProgress.totalAssertions += request.tests.assertions.length
         }
       })
-      testCase.breakOnError = (config.breakRunOnError === 'true')
     })
     await axios.post(`${config.baseURL}/api/outbound/template/` + outboundRequestID, template, { headers: { 'Content-Type': 'application/json' } })
   } catch (err) {

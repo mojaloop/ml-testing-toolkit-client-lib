@@ -36,7 +36,9 @@ const download = async () => {
     const template = await templateGenerator.generateTemplate(inputFiles, selectedLabels)
     if (config.environmentFile) {
       const environmentFileContent = await utils.readFileAsync(config.environmentFile, 'utf8')
-      template.inputValues = JSON.parse(environmentFileContent).inputValues
+      const environmentFileContentObj = JSON.parse(environmentFileContent)
+      template.inputValues = environmentFileContentObj.inputValues
+      template.options = environmentFileContentObj.options
     }
     await report.testcaseDefinition(template)
     console.log(fStr.green('Terminate with exit code 0'))

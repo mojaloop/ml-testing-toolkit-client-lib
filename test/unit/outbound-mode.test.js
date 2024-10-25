@@ -153,7 +153,8 @@ describe('Cli client', () => {
     it('when generateTemplate is successful should not throw an error', async () => {
       spyPromisify.mockReturnValueOnce(() => {
         return JSON.stringify({
-          "inputValues": {}
+          "inputValues": {},
+          "options": {}
         })
       })
       const config = {
@@ -175,7 +176,8 @@ describe('Cli client', () => {
     it('when generateTemplate failed should throw an error', async () => {
       spyPromisify.mockReturnValueOnce(() => {
         return JSON.stringify({
-          "inputValues": {}
+          "inputValues": {},
+          "options": {}
         })
       })
       const config = {
