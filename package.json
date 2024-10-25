@@ -82,7 +82,7 @@
     "path": "0.12.7",
     "rc": "1.2.8",
     "request": "2.88.2",
-    "request-promise-native": "1.0.8",
+    "request-promise-native": "1.0.9",
     "socket.io-client": "4.8.1"
   },
   "devDependencies": {
