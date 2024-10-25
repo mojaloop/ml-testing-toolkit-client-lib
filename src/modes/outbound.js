@@ -154,6 +154,7 @@ const sendTemplate = async (sessionId) => {
     template.options = environmentFileObj.options || {}
     template.saveReport = config.saveReport
     template.name = determineTemplateName(inputFiles)
+    template.options.breakOnError = (config.breakRunOnError === 'true')
 
     template.test_cases.forEach(testCase => {
       totalProgress.totalTestCases++
@@ -165,7 +166,6 @@ const sendTemplate = async (sessionId) => {
           totalProgress.totalAssertions += request.tests.assertions.length
         }
       })
-      testCase.options.breakOnError = (config.breakRunOnError === 'true')
     })
     await axios.post(`${config.baseURL}/api/outbound/template/` + outboundRequestID, template, { headers: { 'Content-Type': 'application/json' } })
   } catch (err) {
