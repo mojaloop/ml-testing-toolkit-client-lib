@@ -149,7 +149,9 @@ const sendTemplate = async (sessionId) => {
     const inputFiles = config.inputFiles.split(',')
     const selectedLabels = config.labels ? config.labels.split(',') : []
     const template = await TemplateGenerator.generateTemplate(inputFiles, selectedLabels)
-    template.inputValues = JSON.parse(await readFileAsync(config.environmentFile, 'utf8')).inputValues
+    const environmentFileObj = JSON.parse(await readFileAsync(config.environmentFile, 'utf8'))
+    template.inputValues = environmentFileObj.inputValues
+    template.options = environmentFileObj.options
     template.saveReport = config.saveReport
     template.name = determineTemplateName(inputFiles)
 

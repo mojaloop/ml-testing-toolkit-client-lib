@@ -54,7 +54,8 @@ describe('Cli client', () => {
     })
     it('when download is not successful should throw an error', async () => {
       spyReadFileAsync.mockResolvedValueOnce(JSON.stringify({
-        "inputValues": {}
+        "inputValues": {},
+        "options": {}
       }))
       const config = {
         inputFiles: "sample-cli.json",
