@@ -65,7 +65,7 @@
   "dependencies": {
     "@mojaloop/central-services-logger": "11.5.1",
     "@mojaloop/ml-testing-toolkit-shared-lib": "14.0.1",
-    "@mojaloop/sdk-standard-components": "workspace:*",
+    "@mojaloop/sdk-standard-components": "^19.2.0",
     "@slack/webhook": "7.0.3",
     "atob": "2.1.2",
     "aws-sdk": "2.1691.0",
