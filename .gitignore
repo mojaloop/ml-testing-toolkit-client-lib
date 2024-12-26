@@ -80,3 +80,5 @@ public_html
 
 # Binaries
 out_native_bin
+
+.rush
