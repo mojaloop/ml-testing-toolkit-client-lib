@@ -62,7 +62,8 @@ const cli = (commanderOptions) => {
     slackFailedImage: configFile.slackFailedImage,
     baseURL: commanderOptions.baseUrl || configFile.baseURL,
     extraSummaryInformation: commanderOptions.extraSummaryInformation || configFile.extraSummaryInformation,
-    labels: commanderOptions.labels || configFile.labels
+    labels: commanderOptions.labels || configFile.labels,
+    batchSize: commanderOptions.batchSize
   }
 
   objectStore.set('config', config)
