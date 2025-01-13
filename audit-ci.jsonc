@@ -5,19 +5,6 @@
   "moderate": true,
   "allowlist": [
     // request-promise-native>request-promise-core>request - Library is now deprecated. see https://github.com/mojaloop/project/issues/3545
-    "GHSA-p8p7-x288-28g6",
-    "GHSA-72xf-g2v4-qvf3",
-    "GHSA-282f-qqgm-c34q",
-    "GHSA-6vfc-qv3f-vr6c",
-    "GHSA-7fh5-64p2-3v2j",
-    "GHSA-cgfm-xwp7-2cvr",
-    "GHSA-ghr5-ch3p-vcr6",
-    "GHSA-mjxr-4v3x-q3m4",
-    "GHSA-p9pc-299p-vxgp",
-    "GHSA-phwq-j96m-2c2q",
-    "GHSA-pppg-cpfq-h7wr",
-    "GHSA-rjqq-98f6-6j3r",
-    "GHSA-rm97-x556-q36h",
-    "GHSA-v88g-cgmw-v5xw"
+    "GHSA-p8p7-x288-28g6"
   ]
 }
