@@ -167,9 +167,11 @@ const sendTemplate = async (sessionId) => {
         }
       })
     })
+    if (config.batchSize) template.batchSize = config.batchSize
+
     await axios.post(`${config.baseURL}/api/outbound/template/` + outboundRequestID, template, { headers: { 'Content-Type': 'application/json' } })
   } catch (err) {
-    console.log(err)
+    console.log('error in sendTemplate:', err)
     process.exit(1)
   }
 }

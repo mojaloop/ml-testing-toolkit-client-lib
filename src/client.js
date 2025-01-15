@@ -35,6 +35,7 @@ program
   .option('-b, --break-run-on-error <breakRunOnError>', 'default: false --- supported values: "false/true"')
   .option('-s, --save-report <saveReport>', 'To save the report on TTK backend server. default: false --- supported values: "false/true"')
   .option('-n, --report-name <reportName>', 'Specify the name of report on TTK backend server. default: "test_run"')
+  .option('--batch-size <N>', 'determines a size of batches to run test cases. By default, test cases are run one by one. Optional')
   .option('--save-report-base-url <saveReportBaseUrl>', 'Incase if the base-url is not accessible publicly, this option replaces the base URL in the report URLs published in console log and slack messages  default: same as base-url. default: same as base-url')
   .option('--labels <labels>', 'csv list of labels, examples: "p2p,settlements,quotes"')
   .option('--report-format <reportFormat>', 'default: "none" --- supported formats: "none", "json", "html", "printhtml"')
