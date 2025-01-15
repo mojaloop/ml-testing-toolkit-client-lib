@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.4.0](https://github.com/mojaloop/ml-testing-toolkit-client-lib/compare/v1.3.1...v1.4.0) (2025-01-15)
+
+
+### Features
+
+* **csi-706:** added batchSize option ([#13](https://github.com/mojaloop/ml-testing-toolkit-client-lib/issues/13)) ([4e770f8](https://github.com/mojaloop/ml-testing-toolkit-client-lib/commit/4e770f8482c17f526ec5466d3c0bfa86207dee22))
+
 ### [1.3.1](https://github.com/mojaloop/ml-testing-toolkit-client-lib/compare/v1.3.0...v1.3.1) (2025-01-13)
 
 
