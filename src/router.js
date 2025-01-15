@@ -63,7 +63,7 @@ const cli = (commanderOptions) => {
     baseURL: commanderOptions.baseUrl || configFile.baseURL,
     extraSummaryInformation: commanderOptions.extraSummaryInformation || configFile.extraSummaryInformation,
     labels: commanderOptions.labels || configFile.labels,
-    batchSize: commanderOptions.batchSize
+    batchSize: commanderOptions.batchSize || parseInt(process.env.TESTCASES_BATCH_SIZE, 10)
   }
 
   objectStore.set('config', config)
