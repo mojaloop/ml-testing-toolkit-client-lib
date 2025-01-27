@@ -42,7 +42,7 @@ const totalProgress = {
 }
 
 const updateTotalProgressCounts = (progress) => {
-  if (progress.requestSent && progress.requestSent.tests && progress.requestSent.tests.assertions) {
+  if (progress.requestSent?.tests?.assertions) {
     progress.requestSent.tests.assertions.forEach(assertion => {
       if (progress.testResult.results[assertion.id].status === 'SUCCESS') {
         totalProgress.passedAssertions++
@@ -52,6 +52,16 @@ const updateTotalProgressCounts = (progress) => {
         totalProgress.failedAssertions++
       }
     })
+  }
+  // TTK will filter out testCases without executionOrder (in parallel run), so we need to get proper total values
+  if (totalProgress.totalTestCases === 0 && progress.totalProgress) {
+    totalProgress.totalTestCases = progress.totalProgress.testCasesTotal
+  }
+  if (totalProgress.totalRequests === 0 && progress.totalProgress) {
+    totalProgress.totalRequests = progress.totalProgress.requestsTotal
+  }
+  if (totalProgress.totalAssertions === 0 && progress.totalProgress) {
+    totalProgress.totalAssertions = progress.totalProgress.assertionsTotal
   }
 }
 
@@ -156,20 +166,21 @@ const sendTemplate = async (sessionId) => {
     template.name = determineTemplateName(inputFiles)
     template.options.breakOnError = (config.breakRunOnError === 'true')
 
-    template.test_cases.forEach(testCase => {
-      totalProgress.totalTestCases++
-      if (testCase.requests) {
-        totalProgress.totalRequests += testCase.requests.length
-      }
-      testCase.requests.forEach(request => {
-        if (request.tests && request.tests.assertions) {
-          totalProgress.totalAssertions += request.tests.assertions.length
-        }
-      })
-    })
+    // template.test_cases.forEach(testCase => {
+    //   totalProgress.totalTestCases++
+    //   if (testCase.requests) {
+    //     totalProgress.totalRequests += testCase.requests.length
+    //   }
+    //   testCase.requests.forEach(request => {
+    //     if (request.tests && request.tests.assertions) {
+    //       totalProgress.totalAssertions += request.tests.assertions.length
+    //     }
+    //   })
+    // })
     if (config.batchSize) template.batchSize = config.batchSize
 
     await axios.post(`${config.baseURL}/api/outbound/template/` + outboundRequestID, template, { headers: { 'Content-Type': 'application/json' } })
+    console.log('DONE!!!')
   } catch (err) {
     console.log('error in sendTemplate:', err)
     process.exit(1)

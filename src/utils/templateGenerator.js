@@ -55,7 +55,7 @@ const generateTemplate = async (inputFiles, selectedLabels = null) => {
     template.name = 'test_run'
     return template
   } catch (err) {
-    console.log(err)
+    console.log('error in generateTemplate:', err)
     return null
   }
 }
