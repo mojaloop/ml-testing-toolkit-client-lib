@@ -59,7 +59,6 @@
     "dep:update": "npx ncu -u",
     "genexec": "pkg -t node8-win .",
     "cli": "node src/client.js",
-    "cli:local": "npm run cli -- -c scripts/cli-default-config.json -e scripts/cli-testcase-environment.json -i tmp_test_cases/testing-toolkit-test-cases-17.0.0-iso.42/collections/hub/golden_path -u http://localhost:5050 --report-format html --report-auto-filename-enable true --extra-summary-information=\"Test Suite:GP Tests,Environment:Local\" --report-name gp_tests_local  --save-report false",
     "release": "npx standard-version --no-verify --releaseCommitMessageFormat 'chore(release): {{currentTag}} [skip ci]'",
     "snapshot": "npx standard-version --no-verify --skip.changelog --prerelease snapshot --releaseCommitMessageFormat 'chore(snapshot): {{currentTag}}'"
   },
