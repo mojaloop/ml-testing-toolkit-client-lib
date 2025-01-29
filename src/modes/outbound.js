@@ -53,7 +53,7 @@ const updateTotalProgressCounts = (progress) => {
       }
     })
   }
-  // TTK will filter out testCases without executionOrder (in parallel run), so we need to get proper total values
+
   if (totalProgress.totalTestCases === 0 && progress.totalProgress) {
     totalProgress.totalTestCases = progress.totalProgress.testCasesTotal
   }
