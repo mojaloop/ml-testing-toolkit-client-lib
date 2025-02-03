@@ -4,8 +4,5 @@
   // Only use one of ["low": true, "moderate": true, "high": true, "critical": true]
   "moderate": true,
   "allowlist": [
-    // request-promise-native>request-promise-core>request - Library is now deprecated. see https://github.com/mojaloop/project/issues/3545
-    "GHSA-p8p7-x288-28g6",
-    "GHSA-c76h-2ccp-4975" // https://github.com/advisories/GHSA-c76h-2ccp-4975
   ]
 }
