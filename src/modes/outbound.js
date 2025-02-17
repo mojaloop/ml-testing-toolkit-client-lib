@@ -29,6 +29,7 @@ const fs = require('fs')
 const { promisify } = require('util')
 const objectStore = require('../objectStore')
 const slackBroadcast = require('../extras/slack-broadcast')
+const releaseCd = require('../extras/release-cd')
 const TemplateGenerator = require('../utils/templateGenerator')
 const { TraceHeaderUtils } = require('@mojaloop/ml-testing-toolkit-shared-lib')
 
@@ -192,6 +193,11 @@ const handleIncomingProgress = async (progress) => {
         } else if (progress.saveReportStatus && !progress.saveReportStatus.isSaved) {
           console.log(fStr.red(`Report not saved: ${progress.saveReportStatus.message}`))
         }
+      }
+      try {
+        await releaseCd(config.reportName, progress.totalResult.runtimeInformation)
+      } catch (err) {
+        console.error(err)
       }
       await slackBroadcast.sendSlackNotification(progress.totalResult, resultReport.uploadedReportURL)
     } catch (err) {
