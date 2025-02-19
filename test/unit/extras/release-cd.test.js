@@ -21,18 +21,40 @@
  - Kalin Krustev <kalin.krustev@infitx.com> (Original Author)
  --------------
  ******/
-const axios = require('axios').default
-const config = require('rc')('release_cd', {})
 
-module.exports = async function (name, result) {
-  if (!config.reportUrl) return
-  const data = {
-    [`tests.${name}`]: result
-  }
-  console.log(`Sending report to ${config.reportUrl}`, data)
-  await axios({
-    method: 'post',
-    url: config.reportUrl,
-    data
+const rc = require('rc')
+jest.mock('rc')
+const axios = require('axios')
+jest.spyOn(axios, 'default')
+axios.default.mockImplementation(() => Promise.resolve({}))
+
+const config = {}
+rc.mockImplementation(() => config)
+
+const releaseCd = require('../../../src/extras/release-cd')
+
+describe('Release CD', () => {
+  describe('Post test results', () => {
+    it('Posts test result to configured URL', async () => {
+      const name = 'test'
+      const result = {}
+      config.reportUrl = 'http://example.com'
+      await releaseCd(name, result)
+      expect(axios.default).toHaveBeenCalledWith({
+        method: 'post',
+        url: 'http://example.com',
+        data: {
+          [`tests.${name}`]: result
+        }
+      })
+    })
+    it('Does not post test result if no report URL is configured', async () => {
+      const name = 'test'
+      const result = {}
+      config.reportUrl = undefined
+      axios.default.mockClear()
+      await releaseCd(name, result)
+      expect(axios.default).not.toHaveBeenCalled()
+    })
   })
-}
+})
