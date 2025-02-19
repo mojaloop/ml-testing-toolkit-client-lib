@@ -1,7 +1,7 @@
 {
   "name": "@mojaloop/ml-testing-toolkit-client-lib",
   "description": "Testing Toolkit Client Library",
-  "version": "1.5.1",
+  "version": "1.6.0-snapshot.1",
   "license": "Apache-2.0",
   "author": "Vijaya Kumar Guthi, ModusBox Inc. ",
   "contributors": [
@@ -63,7 +63,7 @@
     "snapshot": "npx standard-version --no-verify --skip.changelog --prerelease snapshot --releaseCommitMessageFormat 'chore(snapshot): {{currentTag}}'"
   },
   "dependencies": {
-    "@mojaloop/central-services-logger": "11.5.4",
+    "@mojaloop/central-services-logger": "11.5.5",
     "@mojaloop/ml-testing-toolkit-shared-lib": "14.0.3",
     "@mojaloop/sdk-standard-components": "19.6.4",
     "@slack/webhook": "7.0.4",
@@ -80,7 +80,7 @@
     "node-strings": "1.0.2",
     "parse-strings-in-object": "1.6.0",
     "path": "0.12.7",
-    "rc": "1.2.8",
+    "rc": "^1.2.8",
     "socket.io-client": "4.8.1"
   },
   "devDependencies": {
