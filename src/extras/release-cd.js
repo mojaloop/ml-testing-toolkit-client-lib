@@ -29,10 +29,21 @@
 const axios = require('axios').default
 const config = require('rc')('release_cd', {})
 
-module.exports = async function (name, result) {
+module.exports = async function (name, { runtimeInformation, test_cases: testCases }) {
   if (!config.reportUrl) return
   const data = {
-    [`tests.${name}`]: result
+    [`tests.${name}`]: {
+      ...runtimeInformation,
+      assertions: Object.fromEntries(testCases.map(
+        testCase => testCase?.requests?.map(
+          request => request?.request?.tests?.assertions
+            .filter(assertion => assertion?.assertionId ?? assertion.id)
+            .map(
+              assertion => [`${testCase.testCaseId ?? testCase.name}.${request.request.requestId ?? request.request.id}.${assertion?.assertionId ?? assertion.id}`, assertion?.resultStatus?.status]
+            )
+        )
+      ).flat(2))
+    }
   }
   console.log(`Sending report to ${config.reportUrl}`, data)
   await axios({
