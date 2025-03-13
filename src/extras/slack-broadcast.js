@@ -31,24 +31,38 @@ const objectStore = require('../objectStore')
 
 const config = objectStore.get('config')
 
-const generateSlackBlocks = (progress) => {
+const millisecondsToTime = (milliseconds) => {
+  const seconds = Math.floor(milliseconds / 1000)
+  const minutes = Math.floor(seconds / 60)
+  const hours = Math.floor(minutes / 60)
+  return `${String(hours).padStart(2, '0')}:${String(minutes % 60).padStart(2, '0')}:${String(seconds % 60).padStart(2, '0')}`
+}
+
+const generateSlackBlocks = (progress, reportURL) => {
   const slackBlocks = []
   let totalAssertionsCount = 0
   let totalPassedAssertionsCount = 0
   let totalRequestsCount = 0
+  const failedTestCases = []
   progress.test_cases.forEach(testCase => {
     // console.log(fStr.yellow(testCase.name))
     totalRequestsCount += testCase.requests.length
-    // let testCaseAssertionsCount = 0
-    // let testCasePassedAssertionsCount = 0
+    let testCaseAssertionsCount = 0
+    let testCasePassedAssertionsCount = 0
     testCase.requests.forEach(req => {
       const passedAssertionsCount = req.request.tests && req.request.tests.passedAssertionsCount ? req.request.tests.passedAssertionsCount : 0
       const assertionsCount = req.request.tests && req.request.tests.assertions && req.request.tests.assertions.length ? req.request.tests.assertions.length : 0
       totalAssertionsCount += assertionsCount
       totalPassedAssertionsCount += passedAssertionsCount
-      // testCaseAssertionsCount += assertionsCount
-      // testCasePassedAssertionsCount += passedAssertionsCount
+      testCaseAssertionsCount += assertionsCount
+      testCasePassedAssertionsCount += passedAssertionsCount
     })
+    if (testCaseAssertionsCount !== testCasePassedAssertionsCount) {
+      failedTestCases.push({
+        name: testCase.name,
+        failedAssertions: testCaseAssertionsCount - testCasePassedAssertionsCount
+      })
+    }
     // const passed = testCasePassedAssertionsCount === testCaseAssertionsCount
     // // TODO: make sure this list should not be more than 40 because we can add only max 50 blocks in a slack message
     // if(!passed) {
@@ -61,6 +75,40 @@ const generateSlackBlocks = (progress) => {
     //   })
     // }
   })
+
+  // totalAssertionsCount = totalPassedAssertionsCount
+  // failedTestCases.length = 0
+
+  if (config.briefSummaryPrefix) {
+    const top5FailedTestCases = failedTestCases.sort((a, b) => b.failedAssertions - a.failedAssertions).slice(0, 5)
+    return [{
+      type: 'context',
+      elements: [{
+        type: 'mrkdwn',
+        text: [
+          `${totalAssertionsCount === totalPassedAssertionsCount ? '🟢' : '🔴'}`,
+          reportURL ? `<${reportURL}|${config.briefSummaryPrefix}>` : `${config.briefSummaryPrefix}`,
+          `failed: \`${totalAssertionsCount - totalPassedAssertionsCount}/${totalAssertionsCount}`,
+          `(${(100 * ((totalAssertionsCount - totalPassedAssertionsCount) / totalAssertionsCount)).toFixed(2)}%)\`,`,
+          `requests: \`${totalRequestsCount}\`,`,
+          `tests: \`${progress.test_cases.length}\`,`,
+          `duration: \`${millisecondsToTime(progress.runtimeInformation.runDurationMs)}\``,
+          top5FailedTestCases.length > 0 && '\nTop 5 failed test cases:\n',
+          top5FailedTestCases.length > 0 && top5FailedTestCases.map(tc => `• ${tc.name}: \`${tc.failedAssertions}\``).join('\n')
+        ].filter(Boolean).join(' ')
+      }]
+    }]
+  }
+
+  slackBlocks.push({
+    type: 'header',
+    text: {
+      type: 'plain_text',
+      text: 'Testing Toolkit Report',
+      emoji: true
+    }
+  })
+
   let summaryText = ''
 
   summaryText += '>Total assertions: *' + totalAssertionsCount + '*\n'
@@ -107,40 +155,32 @@ const generateSlackBlocks = (progress) => {
     },
     ...additionalParams
   })
+  if (reportURL) {
+    slackBlocks.push({
+      type: 'section',
+      text: {
+        type: 'mrkdwn',
+        text: '<' + reportURL + '|View Report>'
+      }
+    })
+  }
+  slackBlocks.push({
+    type: 'divider'
+  })
   return slackBlocks
 }
 
-const sendSlackNotification = async (progress, reportURL = null) => {
+const sendSlackNotification = async (progress, reportURL = 'http://localhost/') => {
   if (config.slackWebhookUrl) {
     const url = config.slackWebhookUrl
     const webhook = new IncomingWebhook(url)
-    let slackBlocks = []
-    slackBlocks.push({
-      type: 'header',
-      text: {
-        type: 'plain_text',
-        text: 'Testing Toolkit Report',
-        emoji: true
-      }
-    })
-    slackBlocks = slackBlocks.concat(generateSlackBlocks(progress))
-    if (reportURL) {
-      slackBlocks.push({
-        type: 'section',
-        text: {
-          type: 'mrkdwn',
-          text: '<' + reportURL + '|View Report>'
-        }
-      })
-    }
-    slackBlocks.push({
-      type: 'divider'
-    })
+    const blocks = generateSlackBlocks(progress, reportURL)
+
     try {
       // console.log(JSON.stringify(slackBlocks, null, 2))
       await webhook.send({
         text: 'Test Report',
-        blocks: slackBlocks
+        blocks
       })
       console.log('Slack notification sent.')
     } catch (err) {

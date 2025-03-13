@@ -48,6 +48,7 @@ program
   .option('--report-target <reportTarget>', 'default: "file://<file_name_genrated_by_backend>"  --- supported targets: "file://path_to_file", "s3://<bucket_name>[/<file_path>]"')
   .option('--slack-webhook-url <slackWebhookUrl>', 'default: "Disabled"  --- supported formats: "https://....."')
   .option('--extra-summary-information <Comma separated values in the format key:value>', 'default: none  --- example: "Testcase Name:something,Environment:Dev1"')
+  .option('--brief-summary-prefix <Prefix to use for a brief summary in Slack>', 'default: none  --- example: "environment name, test name"')
   .on('--help', () => { // Extra information on help message
     console.log('')
     console.log(' *** If the option report-target is set to use AWS S3 service, the variables (AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_REGION) should be passed in environment')

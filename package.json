@@ -63,13 +63,13 @@
     "snapshot": "npx standard-version --no-verify --skip.changelog --prerelease snapshot --releaseCommitMessageFormat 'chore(snapshot): {{currentTag}}'"
   },
   "dependencies": {
-    "@mojaloop/central-services-logger": "11.5.5",
+    "@mojaloop/central-services-logger": "11.6.2",
     "@mojaloop/ml-testing-toolkit-shared-lib": "14.0.4",
-    "@mojaloop/sdk-standard-components": "19.7.0",
-    "@slack/webhook": "7.0.4",
+    "@mojaloop/sdk-standard-components": "19.10.3",
+    "@slack/webhook": "7.0.5",
     "atob": "2.1.2",
     "aws-sdk": "2.1692.0",
-    "axios": "1.7.9",
+    "axios": "1.8.3",
     "cli-table3": "0.6.5",
     "commander": "13.1.0",
     "dotenv": "16.4.7",

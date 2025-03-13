@@ -200,7 +200,7 @@ const handleIncomingProgress = async (progress) => {
         }
       }
       try {
-        await releaseCd(config.reportName, progress.totalResult.runtimeInformation)
+        await releaseCd(config.reportName, progress.totalResult)
       } catch (err) {
         console.error(err)
       }
