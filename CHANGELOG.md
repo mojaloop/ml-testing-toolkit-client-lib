@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.7.0](https://github.com/mojaloop/ml-testing-toolkit-client-lib/compare/v1.6.1...v1.7.0) (2025-03-13)
+
+
+### Features
+
+* enhance release report structure, implement brief summary option for Slack ([#19](https://github.com/mojaloop/ml-testing-toolkit-client-lib/issues/19)) ([8a6dd8b](https://github.com/mojaloop/ml-testing-toolkit-client-lib/commit/8a6dd8b99182f2931fe3b1cbd14aec7a63b2e316))
+
 ### [1.6.1](https://github.com/mojaloop/ml-testing-toolkit-client-lib/compare/v1.6.0...v1.6.1) (2025-02-25)
 
 
