@@ -29,7 +29,7 @@
 const axios = require('axios').default
 const config = require('rc')('release_cd', {})
 
-module.exports = async function (name, { runtimeInformation, test_cases: testCases }) {
+module.exports = async function (name, { runtimeInformation, test_cases: testCases = [] }) {
   if (!config.reportUrl) return
   const data = {
     [`tests.${name}`]: {

@@ -42,14 +42,41 @@ describe('Release CD', () => {
   describe('Post test results', () => {
     it('Posts test result to configured URL', async () => {
       const name = 'test'
-      const result = {}
+      const result = {
+        test_cases: [
+          {
+            name: 'test-case',
+            requests: [
+              {
+                request: {
+                  id: 'request-id',
+                  tests: {
+                    assertions: [
+                      {
+                        id: 'assertion-id',
+                        resultStatus: {
+                          status: 'SUCCESS'
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      }
       config.reportUrl = 'http://example.com'
       await releaseCd(name, result)
       expect(axios.default).toHaveBeenCalledWith({
         method: 'post',
         url: 'http://example.com',
         data: {
-          [`tests.${name}`]: result
+          [`tests.${name}`]: {
+            assertions: {
+              'test-case.request-id.assertion-id': 'SUCCESS'
+            }
+          }
         }
       })
     })
