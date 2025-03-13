@@ -67,6 +67,7 @@ const cli = (commanderOptions) => {
     slackFailedImage: configFile.slackFailedImage,
     baseURL: commanderOptions.baseUrl || configFile.baseURL,
     extraSummaryInformation: commanderOptions.extraSummaryInformation || configFile.extraSummaryInformation,
+    briefSummaryPrefix: commanderOptions.briefSummaryPrefix || configFile.briefSummaryPrefix,
     labels: commanderOptions.labels || configFile.labels,
     batchSize: commanderOptions.batchSize || configFile.batchSize || parseInt(process.env.TESTCASES_BATCH_SIZE, 10)
   }

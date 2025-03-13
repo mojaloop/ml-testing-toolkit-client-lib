@@ -102,6 +102,13 @@ describe('Cli client', () => {
         text: expect.any(String),
         blocks: expect.any(Array)
       }))
+      SpySlackSend.mockResolvedValueOnce(null)
+      config.briefSummaryPrefix = 'brief'
+      await expect(slackBroadCast.sendSlackNotification(sampleProgress)).resolves.toBe(undefined)
+      expect(SpySlackSend).toHaveBeenCalledWith(expect.objectContaining({
+        text: expect.any(String),
+        blocks: expect.any(Array)
+      }))
     })
     it('When failed case, it should call slack send function', async () => {
       config.slackWebhookUrl = 'http://some_url'
