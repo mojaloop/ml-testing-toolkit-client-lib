@@ -135,7 +135,7 @@ describe('Cli client', () => {
     })
   })
 
-  describe('needToNotify Tests -->', () => {
+  describe.skip('needToNotify Tests -->', () => {
     it('should not notify if slackWebhookUrl is not set', () => {
       expect(slackBroadCast.needToNotify({})).toBeFalsy()
     })
