@@ -134,4 +134,60 @@ describe('Cli client', () => {
       }))
     })
   })
+
+  describe('needToNotify Tests -->', () => {
+    it('should not notify if slackWebhookUrl is not set', () => {
+      expect(slackBroadCast.needToNotify({})).toBeFalsy()
+    })
+
+    it('should notify if slackWebhookUrl is set and slackOnlyFailed not', () => {
+      const conf = { slackWebhookUrl: 'url' }
+      expect(slackBroadCast.needToNotify(conf)).toBe(true)
+    })
+
+    it('should notify if slackWebhookUrl is set and slackOnlyFailed is false', () => {
+      const conf = {
+        slackWebhookUrl: 'url',
+        slackOnlyFailed: false
+      }
+      expect(slackBroadCast.needToNotify(conf)).toBe(true)
+    })
+
+    it('should notify if slackOnlyFailed=true, and tests failed', () => {
+      const conf = {
+        slackWebhookUrl: 'url',
+        slackOnlyFailed: true
+      }
+      const totalResult = {
+        runtimeInformation: {
+          totalPassedAssertions: 0,
+          totalAssertion: 1
+        }
+      }
+      expect(slackBroadCast.needToNotify(conf, totalResult)).toBe(true)
+    })
+
+    it('should notify if slackOnlyFailed=true, and tests passed', () => {
+      const conf = {
+        slackWebhookUrl: 'url',
+        slackOnlyFailed: true
+      }
+      const totalResult = {
+        runtimeInformation: {
+          totalPassedAssertions: 1,
+          totalAssertion: 1
+        }
+      }
+      expect(slackBroadCast.needToNotify(conf, totalResult)).toBe(false)
+    })
+
+    it('should notify if slackOnlyFailed=true, but no totalResult.runtimeInformation', () => {
+      const conf = {
+        slackWebhookUrl: 'url',
+        slackOnlyFailed: true
+      }
+      const totalResult = {}
+      expect(slackBroadCast.needToNotify(conf, totalResult)).toBe(true)
+    })
+  })
 })

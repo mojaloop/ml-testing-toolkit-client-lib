@@ -171,7 +171,7 @@ const generateSlackBlocks = (progress, reportURL) => {
 }
 
 const sendSlackNotification = async (progress, reportURL = 'http://localhost/') => {
-  if (config.slackWebhookUrl) {
+  if (needToNotify(config, progress)) {
     const url = config.slackWebhookUrl
     const webhook = new IncomingWebhook(url)
     const blocks = generateSlackBlocks(progress, reportURL)
@@ -189,6 +189,17 @@ const sendSlackNotification = async (progress, reportURL = 'http://localhost/') 
   }
 }
 
+const needToNotify = (conf, totalResult) => {
+  return conf.slackWebhookUrl && (!conf.slackOnlyFailed
+    ? true
+    : (totalResult?.runtimeInformation?.totalAssertion
+        ? totalResult.runtimeInformation.totalPassedAssertions !== totalResult.runtimeInformation.totalAssertion
+        : true
+      )
+  )
+}
+
 module.exports = {
-  sendSlackNotification
+  sendSlackNotification,
+  needToNotify
 }

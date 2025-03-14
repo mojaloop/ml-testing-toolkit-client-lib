@@ -42,7 +42,8 @@ const cli = (commanderOptions) => {
     reportAutoFilenameEnable: false,
     breakRunOnError: false,
     saveReport: false,
-    saveReportBaseUrl: null
+    saveReportBaseUrl: null,
+    slackOnlyFailed: false
   }
 
   if (fs.existsSync(commanderOptions.config)) {
@@ -63,6 +64,7 @@ const cli = (commanderOptions) => {
     reportAutoFilenameEnable: commanderOptions.reportAutoFilenameEnable === 'true' || configFile.reportAutoFilenameEnable === true,
     reportTarget: commanderOptions.reportTarget || configFile.reportTarget,
     slackWebhookUrl: commanderOptions.slackWebhookUrl || configFile.slackWebhookUrl,
+    slackOnlyFailed: commanderOptions.slackOnlyFailed === 'true' || configFile.slackOnlyFailed,
     slackPassedImage: configFile.slackPassedImage,
     slackFailedImage: configFile.slackFailedImage,
     baseURL: commanderOptions.baseUrl || configFile.baseURL,

@@ -30,17 +30,19 @@
 
 const spyExit = jest.spyOn(process, 'exit')
 const { cli } = require('../../src/router')
+const objectStore = require('../../src/objectStore')
 
 jest.mock('../../src/utils/listeners')
 jest.mock('../../src/modes/outbound')
 jest.mock('../../src/modes/testcaseDefinitionReport')
+jest.mock('../../src/objectStore')
 
 describe('Cli client', () => {
   describe('running router', () => {
     it('when mode is monitoring should not throw an error', async () => {
       const config = {
         "mode": "monitoring"
-      }  
+      }
       spyExit.mockImplementationOnce(jest.fn())
       expect(() => {
         cli(config)
@@ -110,6 +112,15 @@ describe('Cli client', () => {
       expect(() => {
         cli(config)
       }).not.toThrowError();
+    })
+    it('should have default slackOnlyFailed value', async () => {
+      spyExit.mockImplementationOnce(jest.fn())
+      cli({
+        mode: 'outbound',
+        inputFiles: 'test',
+        environmentFile: 'test'
+      })
+      expect(objectStore.set.mock.lastCall[1].slackOnlyFailed).toBe(false)
     })
   })
 })
