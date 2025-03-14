@@ -63,6 +63,7 @@ const cli = (commanderOptions) => {
     reportAutoFilenameEnable: commanderOptions.reportAutoFilenameEnable === 'true' || configFile.reportAutoFilenameEnable === true,
     reportTarget: commanderOptions.reportTarget || configFile.reportTarget,
     slackWebhookUrl: commanderOptions.slackWebhookUrl || configFile.slackWebhookUrl,
+    slackWebhookUrlForFailed: commanderOptions.slackWebhookUrlForFailed || configFile.slackWebhookUrlForFailed,
     slackPassedImage: configFile.slackPassedImage,
     slackFailedImage: configFile.slackFailedImage,
     baseURL: commanderOptions.baseUrl || configFile.baseURL,
