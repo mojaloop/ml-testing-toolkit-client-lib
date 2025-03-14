@@ -211,9 +211,9 @@ const sendSlackNotification = async (progress, reportURL = 'http://localhost/') 
 }
 
 const needToNotifyFailed = (conf, totalResult) => {
-  return conf.slackWebhookUrlForFailed && (!totalResult?.runtimeInformation?.totalAssertion
+  return conf.slackWebhookUrlForFailed && (!totalResult?.runtimeInformation?.totalAssertions
     ? true
-    : totalResult.runtimeInformation.totalPassedAssertions !== totalResult.runtimeInformation.totalAssertion)
+    : totalResult.runtimeInformation.totalPassedAssertions !== totalResult.runtimeInformation.totalAssertions)
 }
 
 module.exports = {
