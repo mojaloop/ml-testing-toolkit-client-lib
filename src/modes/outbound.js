@@ -180,6 +180,36 @@ const sendTemplate = async (sessionId) => {
   }
 }
 
+/**
+ * Consolidated final report, created by generateFinalReport function (ml-testing-toolkit repo).
+ * @typedef {Object} FinalReport
+ * @property {RuntimeInformation} runtimeInformation - Provides metadata about the runtime environment or execution context.
+ * @property {Array<Object>} test_cases - An array of objects where each object represents a test case and its results.
+ * @property {string} status
+ * @property {Object} totalResult
+ * @property {Object} saveReportStatus
+ * @property {unknown} [otherFields] - see ml-testing-toolkit repo.
+ */
+
+/**
+ * @typedef {Object} RuntimeInformation
+ * @property {string} testReportId - Test report ID
+ * @property {string} completedTimeISO - Completed time in ISO format
+ * @property {string} startedTime - Started time in readable format
+ * @property {string} completedTime - Completed time in readable format
+ * @property {string} completedTimeUTC - Completed time in UTC format
+ * @property {number} startedTS - Started timestamp
+ * @property {number} completedTS - Completed timestamp
+ * @property {number} runDurationMs - Run duration in milliseconds
+ * @property {number} totalAssertions - Total number of assertions
+ * @property {number} totalPassedAssertions - Total number of passed assertions
+ */
+
+/**
+ * Handles incoming progress updates and processes them as needed.
+ * @param {FinalReport} progress
+ * @returns {Promise<void>}
+ */
 const handleIncomingProgress = async (progress) => {
   const config = objectStore.get('config')
   if (progress.status === 'FINISHED') {
