@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.8.0](https://github.com/mojaloop/ml-testing-toolkit-client-lib/compare/v1.7.0...v1.8.0) (2025-03-17)
+
+
+### Features
+
+* **csi-1309:** added notifications for failed tests only ([#21](https://github.com/mojaloop/ml-testing-toolkit-client-lib/issues/21)) ([6bf47f7](https://github.com/mojaloop/ml-testing-toolkit-client-lib/commit/6bf47f7e39ab76d954b0dc818e53dd7aaeb0b9f7))
+
 ## [1.7.0](https://github.com/mojaloop/ml-testing-toolkit-client-lib/compare/v1.6.1...v1.7.0) (2025-03-13)
 
 
