@@ -92,10 +92,10 @@ const generateSlackBlocks = (progress, reportURL) => {
         text: [
           `${totalAssertionsCount === totalPassedAssertionsCount ? '🟢' : '🔴'}`,
           reportURL ? `<${reportURL}|${config.briefSummaryPrefix}>` : `${config.briefSummaryPrefix}`,
+          `tests: \`${progress.test_cases.length}\`,`,
+          `requests: \`${totalRequestsCount}\`,`,
           `failed: \`${totalAssertionsCount - totalPassedAssertionsCount}/${totalAssertionsCount}`,
           `(${(100 * ((totalAssertionsCount - totalPassedAssertionsCount) / totalAssertionsCount)).toFixed(2)}%)\`,`,
-          `requests: \`${totalRequestsCount}\`,`,
-          `tests: \`${progress.test_cases.length}\`,`,
           `duration: \`${millisecondsToTime(progress.runtimeInformation.runDurationMs)}\``,
           top5FailedTestCases.length > 0 && '\nTop 5 failed test cases:\n',
           top5FailedTestCases.length > 0 && top5FailedTestCases.map(tc => `• ${tc.name}: \`${tc.failedAssertions}\``).join('\n')
