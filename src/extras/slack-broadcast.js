@@ -179,22 +179,20 @@ const generateSlackBlocks = (progress, reportURL) => {
  * @param {string} reportURL - URL of the report
  */
 const sendSlackNotification = async (progress, reportURL = 'http://localhost/') => {
-  console.log('runtimeInformation: ', progress.runtimeInformation)
-
   const { slackWebhookUrl, slackWebhookUrlForFailed } = config
 
   if (!slackWebhookUrl && !needToNotifyFailed(slackWebhookUrlForFailed, progress)) {
     console.log('No Slack webhook URLs configured.')
     return
   }
-  const notificationBlocks = generateSlackBlocks(progress, reportURL)
+  const blocks = generateSlackBlocks(progress, reportURL)
 
   if (slackWebhookUrl) {
-    await sendWebhook(slackWebhookUrl, 'Test Report', notificationBlocks)
+    await sendWebhook(slackWebhookUrl, 'Test Report', blocks)
   }
 
   if (needToNotifyFailed(slackWebhookUrlForFailed, progress)) {
-    await sendWebhook(slackWebhookUrlForFailed, 'Failed Tests Report', notificationBlocks)
+    await sendWebhook(slackWebhookUrlForFailed, 'Failed Tests Report', blocks)
   }
 }
 
