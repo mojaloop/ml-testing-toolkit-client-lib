@@ -38,6 +38,10 @@ const millisecondsToTime = (milliseconds) => {
   return `${String(hours).padStart(2, '0')}:${String(minutes % 60).padStart(2, '0')}:${String(seconds % 60).padStart(2, '0')}`
 }
 
+/**
+ * @param {FinalReport} progress
+ * @param {string} reportURL - URL of the report
+ */
 const generateSlackBlocks = (progress, reportURL) => {
   const slackBlocks = []
   let totalAssertionsCount = 0
@@ -88,10 +92,10 @@ const generateSlackBlocks = (progress, reportURL) => {
         text: [
           `${totalAssertionsCount === totalPassedAssertionsCount ? '🟢' : '🔴'}`,
           reportURL ? `<${reportURL}|${config.briefSummaryPrefix}>` : `${config.briefSummaryPrefix}`,
+          `tests: \`${progress.test_cases.length}\`,`,
+          `requests: \`${totalRequestsCount}\`,`,
           `failed: \`${totalAssertionsCount - totalPassedAssertionsCount}/${totalAssertionsCount}`,
           `(${(100 * ((totalAssertionsCount - totalPassedAssertionsCount) / totalAssertionsCount)).toFixed(2)}%)\`,`,
-          `requests: \`${totalRequestsCount}\`,`,
-          `tests: \`${progress.test_cases.length}\`,`,
           `duration: \`${millisecondsToTime(progress.runtimeInformation.runDurationMs)}\``,
           top5FailedTestCases.length > 0 && '\nTop 5 failed test cases:\n',
           top5FailedTestCases.length > 0 && top5FailedTestCases.map(tc => `• ${tc.name}: \`${tc.failedAssertions}\``).join('\n')
@@ -170,25 +174,52 @@ const generateSlackBlocks = (progress, reportURL) => {
   return slackBlocks
 }
 
+/**
+ * @param {FinalReport} progress
+ * @param {string} reportURL - URL of the report
+ */
 const sendSlackNotification = async (progress, reportURL = 'http://localhost/') => {
-  if (config.slackWebhookUrl) {
-    const url = config.slackWebhookUrl
-    const webhook = new IncomingWebhook(url)
-    const blocks = generateSlackBlocks(progress, reportURL)
+  const { slackWebhookUrl, slackWebhookUrlForFailed } = config
 
-    try {
-      // console.log(JSON.stringify(slackBlocks, null, 2))
-      await webhook.send({
-        text: 'Test Report',
-        blocks
-      })
-      console.log('Slack notification sent.')
-    } catch (err) {
-      console.log('ERROR: Sending slack notification failed. ', err.message)
-    }
+  if (!slackWebhookUrl && !needToNotifyFailed(slackWebhookUrlForFailed, progress)) {
+    console.log('No Slack webhook URLs configured.')
+    return
+  }
+  const blocks = generateSlackBlocks(progress, reportURL)
+
+  if (slackWebhookUrl) {
+    await sendWebhook(slackWebhookUrl, 'Test Report', blocks)
+  }
+
+  if (needToNotifyFailed(slackWebhookUrlForFailed, progress)) {
+    await sendWebhook(slackWebhookUrlForFailed, 'Failed Tests Report', blocks)
   }
 }
 
+const sendWebhook = async (url, text, blocks) => {
+  const webhook = new IncomingWebhook(url)
+  try {
+    await webhook.send({ text, blocks })
+    console.log('Slack notification sent.')
+  } catch (err) {
+    console.log('ERROR: Sending Slack notification failed. ', err.message)
+  }
+}
+
+/**
+ * Determines if a notification for failed tests needs to be sent.
+ * @param {string | undefined} webhookUrl
+ * @param {FinalReport} progress
+ * @returns {boolean}
+ */
+const needToNotifyFailed = (webhookUrl, progress) => {
+  return webhookUrl && (!progress?.runtimeInformation?.totalAssertions
+    ? true
+    : progress.runtimeInformation.totalPassedAssertions !== progress.runtimeInformation.totalAssertions)
+}
+
 module.exports = {
-  sendSlackNotification
+  sendSlackNotification,
+  sendWebhook,
+  needToNotifyFailed
 }

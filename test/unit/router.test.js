@@ -40,7 +40,7 @@ describe('Cli client', () => {
     it('when mode is monitoring should not throw an error', async () => {
       const config = {
         "mode": "monitoring"
-      }  
+      }
       spyExit.mockImplementationOnce(jest.fn())
       expect(() => {
         cli(config)

@@ -134,4 +134,32 @@ describe('Cli client', () => {
       }))
     })
   })
+
+  describe('needToNotifyFailed Tests -->', () => {
+    it('should not notify if slackWebhookUrlForFailed is not configured', () => {
+      expect(slackBroadCast.needToNotifyFailed(undefined, {})).toBeFalsy()
+    })
+
+    it('should notify if webhookUrl is set, but no progress.runtimeInformation info', () => {
+      expect(slackBroadCast.needToNotifyFailed('url', {})).toBe(true)
+    })
+
+    it('should NOT notify success tests', () => {
+      expect(slackBroadCast.needToNotifyFailed('url', {
+        runtimeInformation: {
+          totalAssertions: 1,
+          totalPassedAssertions: 1
+        }
+      })).toBe(false)
+    })
+
+    it('should notify in case failed tests', () => {
+      expect(slackBroadCast.needToNotifyFailed('url', {
+        runtimeInformation: {
+          totalAssertions: 1,
+          totalPassedAssertions: 0
+        }
+      })).toBe(true)
+    })
+  })
 })
