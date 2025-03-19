@@ -86,20 +86,22 @@ const generateSlackBlocks = (progress, reportURL) => {
   if (config.briefSummaryPrefix) {
     const top5FailedTestCases = failedTestCases.sort((a, b) => b.failedAssertions - a.failedAssertions).slice(0, 5)
     return [{
-      type: 'context',
+      type: 'rich_text',
       elements: [{
-        type: 'mrkdwn',
-        text: [
-          `${totalAssertionsCount === totalPassedAssertionsCount ? '🟢' : '🔴'}`,
-          reportURL ? `<${reportURL}|${config.briefSummaryPrefix}>` : `${config.briefSummaryPrefix}`,
-          `tests: \`${progress.test_cases.length}\`,`,
-          `requests: \`${totalRequestsCount}\`,`,
-          `failed: \`${totalAssertionsCount - totalPassedAssertionsCount}/${totalAssertionsCount}`,
-          `(${(100 * ((totalAssertionsCount - totalPassedAssertionsCount) / totalAssertionsCount)).toFixed(2)}%)\`,`,
-          `duration: \`${millisecondsToTime(progress.runtimeInformation.runDurationMs)}\``,
-          top5FailedTestCases.length > 0 && '\nTop 5 failed test cases:\n',
-          top5FailedTestCases.length > 0 && top5FailedTestCases.map(tc => `• ${tc.name}: \`${tc.failedAssertions}\``).join('\n')
-        ].filter(Boolean).join(' ')
+        type: 'rich_text_section',
+        elements: [
+          { type: 'text', text: `${totalAssertionsCount === totalPassedAssertionsCount ? '🟢' : '🔴'}` },
+          reportURL ? { type: 'link', url: reportURL, text: config.briefSummaryPrefix } : { type: 'text', text: config.briefSummaryPrefix },
+          { type: 'text', text: ' tests: ' },
+          { type: 'text', text: String(progress.test_cases.length), style: { code: true } },
+          { type: 'text', text: ', requests: ' },
+          { type: 'text', text: String(totalRequestsCount), style: { code: true } },
+          { type: 'text', text: ', failed: ' },
+          { type: 'text', text: `${totalAssertionsCount - totalPassedAssertionsCount}/${totalAssertionsCount}(${(100 * ((totalAssertionsCount - totalPassedAssertionsCount) / totalAssertionsCount)).toFixed(2)}%)`, style: { code: true } },
+          { type: 'text', text: ', duration: ' },
+          { type: 'text', text: millisecondsToTime(progress.runtimeInformation.runDurationMs), style: { code: true } },
+          top5FailedTestCases.length > 0 && { type: 'text', text: ', top 5 failed test cases:\n' + top5FailedTestCases.map(tc => `• ${tc.name}: ${tc.failedAssertions}`).join('\n') }
+        ].filter(Boolean)
       }]
     }]
   }
