@@ -41,8 +41,8 @@ module.exports = async function (name, { runtimeInformation, test_cases: testCas
             .map(
               assertion => [`${testCase.testCaseId ?? testCase.name}.${request.request.requestId ?? request.request.id}.${assertion?.assertionId ?? assertion.id}`, assertion?.resultStatus?.status]
             )
-        )
-      ).flat(2))
+        ).filter(Boolean)
+      ).filter(Boolean).flat(2))
     }
   }
   console.log(`Sending report to ${config.reportUrl}`, data)
