@@ -218,7 +218,7 @@ const handleIncomingProgress = async (progress) => {
       passed = logger.outbound(progress.totalResult)
       const resultReport = await report.outbound(progress.totalResult)
       // SaveReport status
-      if (progress.totalResult.saveReport) {
+      if (progress.totalResult?.saveReport) {
         if (progress.saveReportStatus?.isSaved) {
           const ttkReportUrl = `${config.saveReportBaseUrl || config.baseURL}/api/history/test-reports/${progress.totalResult.runtimeInformation.testReportId}?format=html`
           console.log(fStr.green(`Report saved on TTK backend server successfully and is available at ${ttkReportUrl}`))

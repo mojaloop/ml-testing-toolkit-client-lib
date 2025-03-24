@@ -45,7 +45,8 @@ describe('Release CD', () => {
       const result = {
         test_cases: [
           {
-            name: 'test-case',
+            id: 'test-case',
+            name: 'Test Case',
             requests: [
               {
                 request: {
