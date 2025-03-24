@@ -37,9 +37,9 @@ module.exports = async function (name, { runtimeInformation, test_cases: testCas
       assertions: Object.fromEntries(testCases.map(
         testCase => testCase?.requests?.map(
           request => request?.request?.tests?.assertions
-            .filter(assertion => assertion?.assertionId ?? assertion.id)
+            .filter(assertion => assertion?.id)
             .map(
-              assertion => [`${testCase.testCaseId ?? testCase.name}.${request.request.requestId ?? request.request.id}.${assertion?.assertionId ?? assertion.id}`, assertion?.resultStatus?.status]
+              assertion => [`${testCase.id}.${request.request.id}.${assertion?.id}`, assertion?.resultStatus?.status]
             )
         ).filter(Boolean)
       ).filter(Boolean).flat(2))
