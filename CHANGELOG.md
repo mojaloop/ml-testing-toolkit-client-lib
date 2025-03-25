@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.9.1](https://github.com/mojaloop/ml-testing-toolkit-client-lib/compare/v1.9.0...v1.9.1) (2025-03-25)
+
+
+### Bug Fixes
+
+* testcase ids ([#28](https://github.com/mojaloop/ml-testing-toolkit-client-lib/issues/28)) ([6d0d0ff](https://github.com/mojaloop/ml-testing-toolkit-client-lib/commit/6d0d0ff2e868a57384fa985d4c8077e274fc27df))
+
 ## [1.9.0](https://github.com/mojaloop/ml-testing-toolkit-client-lib/compare/v1.8.4...v1.9.0) (2025-03-24)
 
 
