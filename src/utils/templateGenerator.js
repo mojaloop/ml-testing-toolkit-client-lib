@@ -49,7 +49,7 @@ const generateTemplate = async (inputFiles, selectedLabels = null) => {
     }
     const folderData = FolderParser.getFolderData(folderRawDataArray)
     const testCases = FolderParser.getTestCases(folderData, null, selectedLabels)
-    FolderParser.sequenceTestCases(testCases)
+    // FolderParser.sequenceTestCases(testCases)
     const template = {}
     template.test_cases = testCases
     template.name = 'test_run'
