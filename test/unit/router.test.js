@@ -39,7 +39,7 @@ jest.mock('../../src/modes/testcaseDefinitionReport')
 
 describe('Cli client', () => {
   beforeAll(() => {
-    jest.useFakeTimers()
+    jest.useFakeTimers() // use fake timers for testing
   })
 
   afterEach(() => {
