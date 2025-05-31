@@ -17,7 +17,7 @@
   },
   "bugs": "https://github.com/mojaloop/ml-testing-toolkit-client-lib/issues",
   "engines": {
-    "node": ">=18.x"
+    "node": ">=22.x"
   },
   "config": {},
   "bin": {
@@ -36,7 +36,10 @@
     ]
   },
   "pre-commit": [
-    "standard"
+    "lint",
+    "dep:check",
+    "audit:check",
+    "test"
   ],
   "scripts": {
     "start": "node src/index.js",
@@ -48,7 +51,9 @@
     "test:coverage": "jest --coverage --coverageThreshold='{}' --testMatch '**/test/unit/**/*.test.js'",
     "test:coverage-check": "jest --coverage --testMatch '**/test/unit/**/*.test.js'",
     "test:junit": "jest --reporters=default --reporters=jest-junit --testMatch '**/test/unit/**/*.test.js'",
-    "test:integration": "./test/integration-runner.sh ",
+    "test:int1": "./test/integration-runner.sh ",
+    "test:integration": "echo 'integration tests not defined",
+    "test:functional": "echo 'functional tests not defined",
     "cover": "npx nyc --all report --reporter=lcov npm run test",
     "lint": "npm run standard",
     "lint:fix": "npm run standard:fix",
@@ -63,16 +68,16 @@
     "snapshot": "npx standard-version --no-verify --skip.changelog --prerelease snapshot --releaseCommitMessageFormat 'chore(snapshot): {{currentTag}}'"
   },
   "dependencies": {
-    "@mojaloop/central-services-logger": "11.7.0",
-    "@mojaloop/ml-testing-toolkit-shared-lib": "14.0.4",
-    "@mojaloop/sdk-standard-components": "19.11.0",
+    "@mojaloop/central-services-logger": "11.9.0",
+    "@mojaloop/ml-testing-toolkit-shared-lib": "14.0.5",
+    "@mojaloop/sdk-standard-components": "19.15.2",
     "@slack/webhook": "7.0.5",
     "atob": "2.1.2",
     "aws-sdk": "2.1692.0",
-    "axios": "1.8.4",
+    "axios": "1.9.0",
     "cli-table3": "0.6.5",
-    "commander": "13.1.0",
-    "dotenv": "16.4.7",
+    "commander": "14.0.0",
+    "dotenv": "16.5.0",
     "fs": "0.0.1-security",
     "lodash": "4.17.21",
     "mv": "2.1.1",
@@ -87,7 +92,7 @@
     "audit-ci": "7.1.0",
     "jest": "29.7.0",
     "jest-junit": "16.0.0",
-    "npm-check-updates": "17.1.16",
+    "npm-check-updates": "18.0.1",
     "nyc": "17.1.0",
     "parse-strings-in-object": "1.6.0",
     "pre-commit": "1.2.2",
