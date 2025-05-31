@@ -54,6 +54,7 @@
     "test:int1": "./test/integration-runner.sh ",
     "test:integration": "echo 'integration tests not defined'",
     "test:functional": "echo 'functional tests not defined'",
+    "test:xunit": "npm run test:unit",
     "cover": "npx nyc --all report --reporter=lcov npm run test",
     "lint": "npm run standard",
     "lint:fix": "npm run standard:fix",
