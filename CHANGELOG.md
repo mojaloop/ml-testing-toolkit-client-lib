@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.10.0](https://github.com/mojaloop/ml-testing-toolkit-client-lib/compare/v1.9.1...v1.10.0) (2025-06-01)
+
+
+### Features
+
+* bump up the node version to v22.15.1 and fix dangling jest test ([#30](https://github.com/mojaloop/ml-testing-toolkit-client-lib/issues/30)) ([ae569bb](https://github.com/mojaloop/ml-testing-toolkit-client-lib/commit/ae569bb43cf210b982fde4ef71be682bd6172327))
+
 ### [1.9.1](https://github.com/mojaloop/ml-testing-toolkit-client-lib/compare/v1.9.0...v1.9.1) (2025-03-25)
 
 
