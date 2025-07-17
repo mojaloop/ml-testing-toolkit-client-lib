@@ -59,7 +59,7 @@ describe('Cli client', () => {
       spyExit.mockImplementationOnce(jest.fn())
       expect(() => {
         cli(config)
-      }).not.toThrowError()
+      }).not.toThrow()
     })
     it('when mode is outbound and inputFiles is provided should not throw an error', async () => {
       const config = {
@@ -69,7 +69,7 @@ describe('Cli client', () => {
       spyExit.mockImplementationOnce(jest.fn())
       expect(() => {
         cli(config)
-      }).not.toThrowError()
+      }).not.toThrow()
       expect(spyExit).toHaveBeenCalledWith(1)
     })
     it('when mode is outbound, inputFiles and environmentFile is provided should not throw an error', async () => {
@@ -81,7 +81,7 @@ describe('Cli client', () => {
       spyExit.mockImplementationOnce(jest.fn())
       expect(() => {
         cli(config)
-      }).not.toThrowError()
+      }).not.toThrow()
       jest.advanceTimersByTime(1000 * 60 * 15)
       expect(spyExit).toHaveBeenCalledWith(1)
     })
@@ -92,7 +92,7 @@ describe('Cli client', () => {
       spyExit.mockImplementationOnce(jest.fn())
       expect(() => {
         cli(config)
-      }).not.toThrowError()
+      }).not.toThrow()
       expect(spyExit).toHaveBeenCalledWith(1)
     })
     it('when mode is testcaseDefinitionReport and inputFile was provided should not throw an error', async () => {
@@ -103,7 +103,7 @@ describe('Cli client', () => {
       spyExit.mockImplementationOnce(jest.fn())
       expect(() => {
         cli(config)
-      }).not.toThrowError()
+      }).not.toThrow()
     })
     it('when mode is testcaseDefinitionReport and inputFile was not provided should not throw an error', async () => {
       const config = {
@@ -112,7 +112,7 @@ describe('Cli client', () => {
       spyExit.mockImplementationOnce(jest.fn())
       expect(() => {
         cli(config)
-      }).not.toThrowError()
+      }).not.toThrow()
       expect(spyExit).toHaveBeenCalledWith(1)
     })
     it('when mode is not supported should not throw an error', async () => {
@@ -122,7 +122,7 @@ describe('Cli client', () => {
       spyExit.mockImplementationOnce(jest.fn())
       expect(() => {
         cli(config)
-      }).not.toThrowError()
+      }).not.toThrow()
       expect(spyExit).toHaveBeenCalledWith(1)
     })
     it('when mode is not provided should not throw an error', async () => {
@@ -130,7 +130,7 @@ describe('Cli client', () => {
       spyExit.mockImplementationOnce(jest.fn())
       expect(() => {
         cli(config)
-      }).not.toThrowError()
+      }).not.toThrow()
       expect(spyExit).toHaveBeenCalledWith(1)
     })
   })

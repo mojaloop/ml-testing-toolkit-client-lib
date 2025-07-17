@@ -36,6 +36,6 @@ describe('Cli client', () => {
     spyRouter.mockReturnValueOnce({})
     expect(() => {
       require('../../src/client')
-    }).not.toThrowError();
+    }).not.toThrow();
   })
 })

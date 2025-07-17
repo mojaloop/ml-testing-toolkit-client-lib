@@ -50,7 +50,7 @@ describe('Cli client', () => {
       spyExit.mockReturnValueOnce({})
       expect(() => {
         outbound.handleIncomingProgress(progress)
-      }).not.toThrowError()
+      }).not.toThrow()
     })
     it('when status is FINISHED, assertions passed and there is an error should not throw an error', async () => {
       const progress = {
@@ -61,7 +61,7 @@ describe('Cli client', () => {
       spyExit.mockReturnValueOnce({})
       expect(() => {
         outbound.handleIncomingProgress(progress)
-      }).not.toThrowError()
+      }).not.toThrow()
     })
     it('when status is FINISHED and assertions failed should not throw an error', async () => {
       const progress = {
@@ -72,7 +72,7 @@ describe('Cli client', () => {
       spyExit.mockReturnValueOnce({})
       expect(() => {
         outbound.handleIncomingProgress(progress)
-      }).not.toThrowError()
+      }).not.toThrow()
     })
     it('when status is not FINISHED should not throw an error', async () => {
       const progress = {
@@ -81,7 +81,7 @@ describe('Cli client', () => {
       spyExit.mockReturnValueOnce({})
       expect(() => {
         outbound.handleIncomingProgress(progress)
-      }).not.toThrowError()
+      }).not.toThrow()
     })
   })
   describe('when status is not FINISHED should not throw an error where there are assertions', () => {
@@ -125,7 +125,7 @@ describe('Cli client', () => {
       spyExit.mockReturnValueOnce({})
       expect(() => {
         outbound.handleIncomingProgress(progress)
-      }).not.toThrowError()
+      }).not.toThrow()
     })
     it('With loglevel 1', async () => {
       const config = {
@@ -138,7 +138,7 @@ describe('Cli client', () => {
       spyExit.mockReturnValueOnce({})
       expect(() => {
         outbound.handleIncomingProgress(progress)
-      }).not.toThrowError()
+      }).not.toThrow()
     })
     it('With loglevel 2', async () => {
       const config = {
@@ -151,7 +151,7 @@ describe('Cli client', () => {
       spyExit.mockReturnValueOnce({})
       expect(() => {
         outbound.handleIncomingProgress(progress)
-      }).not.toThrowError()
+      }).not.toThrow()
     })
   })
   describe('run sendTemplate', () => {

@@ -229,14 +229,14 @@ describe('Cli client', () => {
       objectStore.get.mockReturnValueOnce({})
       expect(() => {
         logger.outbound(sampleOutboundProgress)
-      }).not.toThrowError()
+      }).not.toThrow()
     })
     it('when extraSummaryInformation is supplied, it should be logged', async () => {
       objectStore.get.mockReturnValueOnce({
         extraSummaryInformation: 'Title:Mocktitle,Summary:MockSummary'
       })
       logger.outbound(sampleOutboundProgress)
-      expect(spyConsole).toBeCalled()
+      expect(spyConsole).toHaveBeenCalled()
     })
     it('when the cli mode is monitoring should not throw an error 1', async () => {
       const sampleMonitoringProgress = {
@@ -247,7 +247,7 @@ describe('Cli client', () => {
       }
       expect(() => {
         logger.monitoring(sampleMonitoringProgress)
-      }).not.toThrowError()
+      }).not.toThrow()
     })
     it('when the cli mode is monitoring should not throw an error 2', async () => {
       const sampleMonitoringProgress = {
@@ -258,7 +258,7 @@ describe('Cli client', () => {
       }
       expect(() => {
         logger.monitoring(sampleMonitoringProgress)
-      }).not.toThrowError()
+      }).not.toThrow()
     })
   })
 })

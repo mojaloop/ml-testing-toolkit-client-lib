@@ -45,7 +45,7 @@ describe('Cli client', () => {
       })
       expect(() => {
         listeners.outbound()
-      }).not.toThrowError();
+      }).not.toThrow();
     })
     it('running the monitoring listener should not throw an error', async () => {
       const monitoring = require('../../src/modes/monitoring')
@@ -57,7 +57,7 @@ describe('Cli client', () => {
       })
       expect(() => {
         listeners.monitoring()
-      }).not.toThrowError();
+      }).not.toThrow();
     })
   })
 })
