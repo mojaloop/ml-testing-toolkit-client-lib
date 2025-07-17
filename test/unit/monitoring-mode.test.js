@@ -37,7 +37,7 @@ describe('Cli client', () => {
       jest.spyOn(logger, 'monitoring').mockReturnValueOnce({})
       expect(() => {
         monitoringMode.handleIncomingProgress({})
-      }).not.toThrowError()
+      }).not.toThrow()
     })
   })
 })
