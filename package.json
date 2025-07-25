@@ -71,14 +71,14 @@
   "dependencies": {
     "@mojaloop/central-services-logger": "11.9.0",
     "@mojaloop/ml-testing-toolkit-shared-lib": "14.2.0",
-    "@mojaloop/sdk-standard-components": "19.16.0",
+    "@mojaloop/sdk-standard-components": "19.16.4",
     "@slack/webhook": "7.0.5",
     "atob": "2.1.2",
     "aws-sdk": "2.1692.0",
-    "axios": "1.10.0",
+    "axios": "1.11.0",
     "cli-table3": "0.6.5",
     "commander": "14.0.0",
-    "dotenv": "17.2.0",
+    "dotenv": "17.2.1",
     "fs": "0.0.1-security",
     "lodash": "4.17.21",
     "mv": "2.1.1",
@@ -91,9 +91,9 @@
   },
   "devDependencies": {
     "audit-ci": "7.1.0",
-    "jest": "30.0.4",
+    "jest": "30.0.5",
     "jest-junit": "16.0.0",
-    "npm-check-updates": "18.0.1",
+    "npm-check-updates": "18.0.2",
     "nyc": "17.1.0",
     "parse-strings-in-object": "1.6.0",
     "pre-commit": "1.2.2",
@@ -103,6 +103,9 @@
     "standard-version": "9.5.0"
   },
   "overrides": {
+    "form-data": "4.0.4",
+    "on-headers": "1.1.0",
+    "brace-expansion": "2.0.2",
     "shins": {
       "ajv": "6.12.3",
       "ejs": "3.1.10",
