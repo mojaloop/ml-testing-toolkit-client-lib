@@ -112,6 +112,7 @@ const report = async (data, reportType) => {
     }
   } else {
     // Store the file
+    reportFilename = `${config.reportFolder || '.'}/${reportFilename}`
     const writeFileAsync = promisify(fs.writeFile)
     await writeFileAsync(reportFilename, reportData)
     console.log(`${reportFilename} was generated`)
