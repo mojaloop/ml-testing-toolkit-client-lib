@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.10.3](https://github.com/mojaloop/ml-testing-toolkit-client-lib/compare/v1.10.2...v1.10.3) (2025-08-04)
+
+
+### Bug Fixes
+
+* support read only root filesystem ([#36](https://github.com/mojaloop/ml-testing-toolkit-client-lib/issues/36)) ([81c6c9e](https://github.com/mojaloop/ml-testing-toolkit-client-lib/commit/81c6c9e2238b537f7998a171e9ba94794ef40cca))
+
+
+### Chore
+
+* **sbom:** update sbom [skip ci] ([44e6c03](https://github.com/mojaloop/ml-testing-toolkit-client-lib/commit/44e6c03740ee20637040011a7aab5a9cd27285b8))
+
 ### [1.10.2](https://github.com/mojaloop/ml-testing-toolkit-client-lib/compare/v1.10.1...v1.10.2) (2025-07-25)
 
 
