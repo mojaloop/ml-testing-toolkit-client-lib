@@ -29,12 +29,12 @@
 const axios = require('axios').default
 const config = require('rc')('release_cd', {})
 
-module.exports = async function (name, { runtimeInformation, test_cases: testCases = [] }, report) {
+module.exports = async function (name, { runtimeInformation, test_cases: testCases = [] } = {}, report) {
   if (!config.reportUrl) return
   const data = {
     [`tests.${name}`]: {
       ...runtimeInformation,
-      duration: runtimeInformation.runDurationMs,
+      duration: runtimeInformation?.runDurationMs,
       report,
       assertions: Object.fromEntries(testCases.map(
         testCase => testCase?.requests?.map(
