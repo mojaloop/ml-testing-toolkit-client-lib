@@ -230,7 +230,7 @@ const handleIncomingProgress = async (progress) => {
         }
       }
       try {
-        await releaseCd(config.reportName, progress.totalResult)
+        await releaseCd(config.reportName, progress.totalResult, resultReport.uploadedReportURL)
       } catch (err) {
         console.error(err)
       }

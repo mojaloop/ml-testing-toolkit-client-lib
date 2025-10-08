@@ -90,8 +90,8 @@ const generateSlackBlocks = (progress, reportURL) => {
       elements: [{
         type: 'rich_text_section',
         elements: [
-          { type: 'text', text: `${totalAssertionsCount === totalPassedAssertionsCount ? '🟢' : '🔴'}` },
-          reportURL ? { type: 'link', url: reportURL, text: config.briefSummaryPrefix } : { type: 'text', text: config.briefSummaryPrefix },
+          { type: 'text', text: `${totalAssertionsCount === totalPassedAssertionsCount ? '✅' : '⚠️'}${config.briefSummaryPrefix || ''} ` },
+          reportURL ? { type: 'link', url: reportURL, text: config.reportName } : { type: 'text', text: config.reportName },
           { type: 'text', text: ' tests: ' },
           { type: 'text', text: String(progress.test_cases.length), style: { code: true } },
           { type: 'text', text: ', requests: ' },
