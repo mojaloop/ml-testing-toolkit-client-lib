@@ -62,6 +62,7 @@ const cli = (commanderOptions) => {
     reportFormat: commanderOptions.reportFormat || configFile.reportFormat,
     reportAutoFilenameEnable: commanderOptions.reportAutoFilenameEnable === 'true' || configFile.reportAutoFilenameEnable === true,
     reportTarget: commanderOptions.reportTarget || configFile.reportTarget,
+    s3: configFile.s3,
     reportFolder: commanderOptions.reportFolder || configFile.reportFolder,
     slackWebhookUrl: commanderOptions.slackWebhookUrl || configFile.slackWebhookUrl,
     slackWebhookUrlForFailed: commanderOptions.slackWebhookUrlForFailed || configFile.slackWebhookUrlForFailed,
