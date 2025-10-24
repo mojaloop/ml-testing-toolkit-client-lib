@@ -100,9 +100,19 @@ const generateSlackBlocks = (progress, reportURL) => {
           { type: 'text', text: `${totalAssertionsCount - totalPassedAssertionsCount}/${totalAssertionsCount}(${(100 * ((totalAssertionsCount - totalPassedAssertionsCount) / totalAssertionsCount)).toFixed(2)}%)`, style: { code: true } },
           { type: 'text', text: ', duration: ' },
           { type: 'text', text: millisecondsToTime(progress.runtimeInformation.runDurationMs), style: { code: true } },
-          top5FailedTestCases.length > 0 && { type: 'text', text: ', top 5 failed test cases:\n' + top5FailedTestCases.map(tc => `• ${tc.name}: ${tc.failedAssertions}`).join('\n') }
+          top5FailedTestCases.length > 0 && { type: 'text', text: ', top 5 failed test cases:' }
         ].filter(Boolean)
-      }]
+      }, ...(top5FailedTestCases.length > 0
+        ? [{
+            type: 'rich_text_list',
+            style: 'bullet',
+            elements: top5FailedTestCases.map(tc => ({
+              type: 'rich_text_section',
+              elements: [{ type: 'text', text: `${tc.name}: ${tc.failedAssertions}` }]
+            }))
+          }]
+        : []
+      )]
     }]
   }
 
