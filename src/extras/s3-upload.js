@@ -50,7 +50,7 @@ const uploadFileDataToS3 = async (s3URL, fileData, config) => {
   const bucketName = s3Arr[1]
   const objectKey = s3Arr[2]
   // Create S3 service object
-  const s3 = new AWS.S3({ apiVersion: '2012-10-17', ...config })
+  const s3 = new AWS.S3({ apiVersion: '2012-10-17', ...(config || {}) })
   const additionalParams = {}
   if (objectKey.endsWith('.html') || objectKey.endsWith('.htm')) {
     additionalParams.ContentType = 'text/html'
