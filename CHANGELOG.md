@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.12.0](https://github.com/mojaloop/ml-testing-toolkit-client-lib/compare/v1.11.0...v1.12.0) (2025-10-27)
+
+
+### Features
+
+* allow extra S3 configuration ([#40](https://github.com/mojaloop/ml-testing-toolkit-client-lib/issues/40)) ([f0c4be9](https://github.com/mojaloop/ml-testing-toolkit-client-lib/commit/f0c4be9ce9532e96da1813bfa35307bde7756163))
+
+
+### Chore
+
+* **sbom:** update sbom [skip ci] ([a83d74f](https://github.com/mojaloop/ml-testing-toolkit-client-lib/commit/a83d74f6f256daf3a16fb921ec1ca1d5182d45e7))
+
 ## [1.11.0](https://github.com/mojaloop/ml-testing-toolkit-client-lib/compare/v1.10.3...v1.11.0) (2025-10-08)
 
 
