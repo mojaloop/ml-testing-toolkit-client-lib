@@ -102,7 +102,7 @@ const report = async (data, reportType) => {
         break
       }
       case 's3': {
-        const uploadedReportURL = await s3Upload.uploadFileDataToS3('s3://' + writeFileName, reportData)
+        const uploadedReportURL = await s3Upload.uploadFileDataToS3('s3://' + writeFileName, reportData, config.s3)
         returnInfo.uploadedReportURL = uploadedReportURL
         break
       }

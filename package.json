@@ -1,7 +1,7 @@
 {
   "name": "@mojaloop/ml-testing-toolkit-client-lib",
   "description": "Testing Toolkit Client Library",
-  "version": "1.11.0",
+  "version": "1.12.0-ceph-bucket.5",
   "license": "Apache-2.0",
   "author": "Vijaya Kumar Guthi, ModusBox Inc. ",
   "contributors": [
@@ -93,7 +93,7 @@
     "audit-ci": "7.1.0",
     "jest": "30.2.0",
     "jest-junit": "16.0.0",
-    "npm-check-updates": "19.0.0",
+    "npm-check-updates": "19.1.1",
     "nyc": "17.1.0",
     "parse-strings-in-object": "1.6.0",
     "pre-commit": "1.2.2",

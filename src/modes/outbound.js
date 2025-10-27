@@ -217,13 +217,14 @@ const handleIncomingProgress = async (progress) => {
     try {
       passed = logger.outbound(progress.totalResult)
       const resultReport = await report.outbound(progress.totalResult)
+      let slackReportURL = resultReport.uploadedReportURL
       // SaveReport status
       if (progress.totalResult?.saveReport) {
         if (progress.saveReportStatus?.isSaved) {
-          const ttkReportUrl = `${config.saveReportBaseUrl || config.baseURL}/api/history/test-reports/${progress.totalResult.runtimeInformation.testReportId}?format=html`
-          console.log(fStr.green(`Report saved on TTK backend server successfully and is available at ${ttkReportUrl}`))
+          slackReportURL = `${config.saveReportBaseUrl || config.baseURL}/api/history/test-reports/${progress.totalResult.runtimeInformation.testReportId}?format=html`
+          console.log(fStr.green(`Report saved on TTK backend server successfully and is available at ${slackReportURL}`))
           if (!resultReport.uploadedReportURL) {
-            resultReport.uploadedReportURL = ttkReportUrl
+            resultReport.uploadedReportURL = slackReportURL
           }
         } else if (progress.saveReportStatus && !progress.saveReportStatus.isSaved) {
           console.log(fStr.red(`Report not saved: ${progress.saveReportStatus.message}`))
@@ -234,7 +235,7 @@ const handleIncomingProgress = async (progress) => {
       } catch (err) {
         console.error(err)
       }
-      await slackBroadcast.sendSlackNotification(progress.totalResult, resultReport.uploadedReportURL)
+      await slackBroadcast.sendSlackNotification(progress.totalResult, slackReportURL)
     } catch (err) {
       console.log(err)
       passed = false

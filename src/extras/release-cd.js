@@ -47,7 +47,12 @@ module.exports = async function (name, { runtimeInformation, test_cases: testCas
       ).filter(Boolean).flat(2))
     }
   }
-  console.log(`Sending report to ${config.reportUrl}`, data)
+  console.log(`Sending report to ${config.reportUrl}`, {
+    [`tests.${name}`]: {
+      ...data[`tests.${name}`],
+      assertions: '<<LONG DATA>>'
+    }
+  })
   await axios({
     method: 'post',
     url: config.reportUrl,

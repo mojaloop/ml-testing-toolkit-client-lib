@@ -31,7 +31,7 @@ const AWS = require('aws-sdk')
 // Set the region
 AWS.config.update({ region: process.env.AWS_REGION })
 
-const uploadFileDataToS3 = async (s3URL, fileData) => {
+const uploadFileDataToS3 = async (s3URL, fileData, config) => {
   if (!AWS.config.credentials) {
     console.log('ERROR: Upload to S3 failed. AWS_ACCESS_KEY_ID or AWS_SECRET_ACCESS_KEY not set')
     return
@@ -50,7 +50,7 @@ const uploadFileDataToS3 = async (s3URL, fileData) => {
   const bucketName = s3Arr[1]
   const objectKey = s3Arr[2]
   // Create S3 service object
-  const s3 = new AWS.S3({ apiVersion: '2012-10-17' })
+  const s3 = new AWS.S3({ apiVersion: '2012-10-17', ...(config || {}) })
   const additionalParams = {}
   if (objectKey.endsWith('.html') || objectKey.endsWith('.htm')) {
     additionalParams.ContentType = 'text/html'
@@ -61,7 +61,7 @@ const uploadFileDataToS3 = async (s3URL, fileData) => {
   try {
     // call S3 to retrieve upload file to specified bucket
     const result = await s3.upload(uploadParams).promise()
-    console.log('Successfully uploaded the file to S3. URL is ' + s3URL)
+    console.log('Successfully uploaded the file to S3. URL is ' + result.Location)
     return result.Location
   } catch (err) {
     console.log('ERROR: Upload to S3 failed. ', err.message)
