@@ -212,11 +212,13 @@ const sendTemplate = async (sessionId) => {
  */
 const handleIncomingProgress = async (progress) => {
   const config = objectStore.get('config')
+  const resultReport = await report.outbound(progress.totalResult)
+
   if (progress.status === 'FINISHED') {
     let passed
     try {
       passed = logger.outbound(progress.totalResult)
-      const resultReport = await report.outbound(progress.totalResult)
+      // const resultReport = await report.outbound(progress.totalResult)
       let slackReportURL = resultReport.uploadedReportURL
       // SaveReport status
       if (progress.totalResult?.saveReport) {
@@ -248,11 +250,27 @@ const handleIncomingProgress = async (progress) => {
       process.exit(1)
     }
   } else if (progress.status === 'TERMINATED') {
+    console.log(fStr.red('Test execution terminated/timed out'))
+
+    // Send notification about timeout with whatever progress data is available
+    try {
+      const timeoutProgress = {
+        ...(progress.totalResult || {}),
+        terminatedDueToTimeout: true,
+        timeoutMessage: 'Tests execution timed out before completion'
+      }
+      await slackBroadcast.sendSlackNotification(timeoutProgress, null)
+    } catch (err) {
+      console.log('Failed to send timeout notification:', err)
+    }
+
     console.log(fStr.red('Terminate with exit code 1'))
     process.exit(1)
   } else {
     updateTotalProgressCounts(progress)
     printProgress(progress)
+    console.log(fStr.green(`Not expected progress.status: ${progress?.status}`))
+    await slackBroadcast.sendSlackNotification(progress?.totalResult, null)
   }
 }
 

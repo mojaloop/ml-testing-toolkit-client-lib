@@ -39,15 +39,86 @@ const millisecondsToTime = (milliseconds) => {
 }
 
 /**
+ * Generate minimal Slack blocks for timeout with no test results
+ * @param {Object} progress - Partial progress object
+ * @param {string} reportURL - URL of the report
+ * @returns {Array} Slack blocks array
+ */
+const generateTimeoutBlocks = (progress, reportURL) => {
+  const timeoutMessage = progress?.timeoutMessage || 'Tests execution timed out'
+  const slackBlocks = []
+
+  slackBlocks.push({
+    type: 'header',
+    text: {
+      type: 'plain_text',
+      text: '⏱️ Testing Toolkit - Test Execution Timeout',
+      emoji: true
+    }
+  })
+
+  let summaryText = '>⚠️ *' + timeoutMessage + '*\n\n'
+  summaryText += '>Test execution was terminated before completion.\n'
+  summaryText += '>No test results available.\n\n'
+
+  if (config.reportName) {
+    summaryText += '>Report Name: *' + config.reportName + '*\n'
+  }
+  if (config.environmentName) {
+    summaryText += '>Environment: *' + config.environmentName + '*\n'
+  }
+
+  slackBlocks.push({
+    type: 'section',
+    text: {
+      type: 'mrkdwn',
+      text: summaryText
+    }
+  })
+
+  if (config.extraSummaryInformation) {
+    const extraSummaryInformationArr = config.extraSummaryInformation.split(',')
+    let extraText = ''
+    extraSummaryInformationArr.forEach(info => {
+      const infoArr = info.split(':')
+      extraText += infoArr[0] + ': `' + infoArr[1] + '`\n'
+    })
+    if (extraText) {
+      slackBlocks.push({
+        type: 'section',
+        text: {
+          type: 'mrkdwn',
+          text: extraText
+        }
+      })
+    }
+  }
+
+  slackBlocks.push({
+    type: 'divider'
+  })
+
+  return slackBlocks
+}
+
+/**
  * @param {FinalReport} progress
  * @param {string} reportURL - URL of the report
  */
 const generateSlackBlocks = (progress, reportURL) => {
   const slackBlocks = []
+  const isTimeout = progress?.terminatedDueToTimeout || false
   let totalAssertionsCount = 0
   let totalPassedAssertionsCount = 0
   let totalRequestsCount = 0
   const failedTestCases = []
+
+  // Handle timeout case where test_cases might be incomplete or missing
+  if (!progress?.test_cases || !Array.isArray(progress.test_cases)) {
+    // Create minimal notification for timeout without test results
+    return generateTimeoutBlocks(progress, reportURL)
+  }
+
   progress.test_cases.forEach(testCase => {
     // console.log(fStr.yellow(testCase.name))
     totalRequestsCount += testCase.requests.length
@@ -90,8 +161,9 @@ const generateSlackBlocks = (progress, reportURL) => {
       elements: [{
         type: 'rich_text_section',
         elements: [
-          { type: 'text', text: `${totalAssertionsCount === totalPassedAssertionsCount ? '✅' : '⚠️'}${config.briefSummaryPrefix || ''} ` },
+          { type: 'text', text: `${isTimeout ? '⏱️' : (totalAssertionsCount === totalPassedAssertionsCount ? '✅' : '⚠️')}${config.briefSummaryPrefix || ''} ` },
           reportURL ? { type: 'link', url: reportURL, text: config.reportName } : { type: 'text', text: config.reportName },
+          isTimeout && { type: 'text', text: ' [TIMEOUT]' },
           { type: 'text', text: ' tests: ' },
           { type: 'text', text: String(progress.test_cases.length), style: { code: true } },
           { type: 'text', text: ', requests: ' },
@@ -120,12 +192,17 @@ const generateSlackBlocks = (progress, reportURL) => {
     type: 'header',
     text: {
       type: 'plain_text',
-      text: 'Testing Toolkit Report',
+      text: isTimeout ? '⏱️ Testing Toolkit Report - TIMEOUT' : 'Testing Toolkit Report',
       emoji: true
     }
   })
 
   let summaryText = ''
+
+  if (isTimeout) {
+    summaryText += '>⚠️ *Tests execution timed out before completion*\n'
+    summaryText += '>Partial results below:\n\n'
+  }
 
   summaryText += '>Total assertions: *' + totalAssertionsCount + '*\n'
   summaryText += '>Passed assertions: *' + totalPassedAssertionsCount + '*\n'
