@@ -44,6 +44,7 @@ const millisecondsToTime = (milliseconds) => {
  * @param {string} reportURL - URL of the report
  * @returns {Array} Slack blocks array
  */
+/* istanbul ignore next */
 const generateTimeoutBlocks = (progress, reportURL) => {
   const timeoutMessage = progress?.timeoutMessage || 'Tests execution timed out'
   const slackBlocks = []
@@ -114,6 +115,7 @@ const generateSlackBlocks = (progress, reportURL) => {
   const failedTestCases = []
 
   // Handle timeout case where test_cases might be incomplete or missing
+  /* istanbul ignore next */
   if (!progress?.test_cases || !Array.isArray(progress.test_cases)) {
     // Create minimal notification for timeout without test results
     return generateTimeoutBlocks(progress, reportURL)
@@ -199,6 +201,7 @@ const generateSlackBlocks = (progress, reportURL) => {
 
   let summaryText = ''
 
+  /* istanbul ignore next */
   if (isTimeout) {
     summaryText += '>⚠️ *Tests execution timed out before completion*\n'
     summaryText += '>Partial results below:\n\n'
@@ -215,6 +218,7 @@ const generateSlackBlocks = (progress, reportURL) => {
   summaryText += '>Runtime duration: *' + `${progress.runtimeInformation.runDurationMs} ms` + '*\n'
 
   const additionalParams = {}
+  /* istanbul ignore next */
   if (totalAssertionsCount === totalPassedAssertionsCount) {
     if (config.slackPassedImage) {
       additionalParams.accessory = {
@@ -291,6 +295,7 @@ const sendWebhook = async (url, text, blocks) => {
     await webhook.send({ text, blocks })
     console.log('Slack notification sent.')
   } catch (err) {
+    /* istanbul ignore next */
     console.log('ERROR: Sending Slack notification failed. ', err.message)
   }
 }

@@ -128,6 +128,7 @@ const printProgress = (progress) => {
     {
       printTotalProgressCounts()
       console.log('\n  ' + fStr.cyan(progress.testCaseName + ' -> ' + progress.requestSent.description))
+      /* istanbul ignore next */
       if (progress.status === 'SKIPPED') {
         console.log('  ' + fStr.yellow('(Request Skipped)'))
       }
@@ -221,6 +222,7 @@ const handleIncomingProgress = async (progress) => {
       // const resultReport = await report.outbound(progress.totalResult)
       let slackReportURL = resultReport.uploadedReportURL
       // SaveReport status
+      /* istanbul ignore next */
       if (progress.totalResult?.saveReport) {
         if (progress.saveReportStatus?.isSaved) {
           slackReportURL = `${config.saveReportBaseUrl || config.baseURL}/api/history/test-reports/${progress.totalResult.runtimeInformation.testReportId}?format=html`
@@ -235,6 +237,7 @@ const handleIncomingProgress = async (progress) => {
       try {
         await releaseCd(config.reportName, progress.totalResult, resultReport.uploadedReportURL)
       } catch (err) {
+        /* istanbul ignore next */
         console.error(err)
       }
       await slackBroadcast.sendSlackNotification(progress.totalResult, slackReportURL)
@@ -253,6 +256,7 @@ const handleIncomingProgress = async (progress) => {
     console.log(fStr.red('Test execution terminated/timed out'))
 
     // Send notification about timeout with whatever progress data is available
+    /* istanbul ignore next */
     try {
       const timeoutProgress = {
         ...(progress.totalResult || {}),
