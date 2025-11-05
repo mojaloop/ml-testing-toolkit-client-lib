@@ -36,6 +36,9 @@ const { cli } = require('../../src/router')
 jest.mock('../../src/utils/listeners')
 jest.mock('../../src/modes/outbound')
 jest.mock('../../src/modes/testcaseDefinitionReport')
+jest.mock('../../src/extras/slack-broadcast', () => ({
+  sendSlackNotification: jest.fn().mockResolvedValue(undefined)
+}))
 
 describe('Cli client', () => {
   beforeAll(() => {
@@ -82,7 +85,7 @@ describe('Cli client', () => {
       expect(() => {
         cli(config)
       }).not.toThrow()
-      jest.advanceTimersByTime(1000 * 60 * 15)
+      await jest.advanceTimersByTimeAsync(1000 * 60 * 15)
       expect(spyExit).toHaveBeenCalledWith(1)
     })
     it('when mode is outbound and inputFile was not provided should not throw an error', async () => {

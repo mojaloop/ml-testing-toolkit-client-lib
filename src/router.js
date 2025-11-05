@@ -30,6 +30,7 @@ const fs = require('fs')
 const _ = require('lodash')
 const objectStore = require('./objectStore')
 const { TraceHeaderUtils } = require('@mojaloop/ml-testing-toolkit-shared-lib')
+const slackBroadcast = require('./extras/slack-broadcast')
 
 const TESTS_EXECUTION_TIMEOUT = 1000 * 60 * 15 // 15min timout
 
@@ -88,8 +89,21 @@ const cli = (commanderOptions) => {
           const sessionId = TraceHeaderUtils.generateSessionId()
           require('./utils/listeners').outbound(sessionId)
           require('./modes/outbound').sendTemplate(sessionId)
-          setTimeout(() => {
+          setTimeout(async () => {
             console.log('Tests execution timed out....')
+
+            // Send Slack notification before exiting
+            /* istanbul ignore next */
+            try {
+              const timeoutProgress = {
+                terminatedDueToTimeout: true,
+                timeoutMessage: 'Tests execution timed out after 15 minutes'
+              }
+              await slackBroadcast.sendSlackNotification(timeoutProgress, null)
+            } catch (err) {
+              console.log('Failed to send timeout notification:', err.message)
+            }
+
             process.exit(1)
           }, TESTS_EXECUTION_TIMEOUT)
         } else {
