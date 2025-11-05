@@ -39,40 +39,42 @@ const objectStore = require('../../src/objectStore')
 const outbound = require('../../src/modes/outbound')
 const spyGenerateTemplate = jest.spyOn(require('../../src/utils/templateGenerator'), 'generateTemplate')
 
+// Mock Slack integration
+const slackBroadcast = require('../../src/extras/slack-broadcast')
+const spySlackBroadcast = jest.spyOn(slackBroadcast, 'sendSlackNotification')
+spySlackBroadcast.mockImplementation(() => Promise.resolve())
+
 describe('Cli client', () => {
   describe('run outbound mode', () => {
     it('when status is FINISHED and assertion passed should not throw an error', async () => {
       const progress = {
         "status": "FINISHED"
       }
+      spySlackBroadcast.mockResolvedValueOnce(undefined)
       spyReport.mockReturnValueOnce({})
       spyLogger.mockReturnValueOnce(true)
       spyExit.mockReturnValueOnce({})
-      expect(() => {
-        outbound.handleIncomingProgress(progress)
-      }).not.toThrow()
+      await expect(outbound.handleIncomingProgress(progress)).resolves.not.toThrow()
     })
     it('when status is FINISHED, assertions passed and there is an error should not throw an error', async () => {
       const progress = {
         "status": "FINISHED"
       }
+      spySlackBroadcast.mockResolvedValueOnce(undefined)
       spyReport.mockImplementationOnce(() => {throw new Error('expected error')})
       spyLogger.mockReturnValueOnce(true)
       spyExit.mockReturnValueOnce({})
-      expect(() => {
-        outbound.handleIncomingProgress(progress)
-      }).not.toThrow()
+      await expect(outbound.handleIncomingProgress(progress)).rejects.toThrow('expected error')
     })
     it('when status is FINISHED and assertions failed should not throw an error', async () => {
       const progress = {
         "status": "FINISHED"
       }
+      spySlackBroadcast.mockResolvedValueOnce(undefined)
       spyReport.mockReturnValueOnce({})
       spyLogger.mockReturnValueOnce(false)
       spyExit.mockReturnValueOnce({})
-      expect(() => {
-        outbound.handleIncomingProgress(progress)
-      }).not.toThrow()
+      await expect(outbound.handleIncomingProgress(progress)).resolves.not.toThrow()
     })
     it('when status is not FINISHED should not throw an error', async () => {
       const progress = {
