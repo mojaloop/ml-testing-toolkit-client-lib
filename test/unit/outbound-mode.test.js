@@ -64,7 +64,7 @@ describe('Cli client', () => {
       spyReport.mockImplementationOnce(() => {throw new Error('expected error')})
       spyLogger.mockReturnValueOnce(true)
       spyExit.mockReturnValueOnce({})
-      await expect(outbound.handleIncomingProgress(progress)).rejects.toThrow('expected error')
+      await expect(outbound.handleIncomingProgress(progress)).resolves.not.toThrow()
     })
     it('when status is FINISHED and assertions failed should not throw an error', async () => {
       const progress = {

@@ -213,13 +213,13 @@ const sendTemplate = async (sessionId) => {
  */
 const handleIncomingProgress = async (progress) => {
   const config = objectStore.get('config')
-  const resultReport = await report.outbound(progress.totalResult)
 
   if (progress.status === 'FINISHED') {
     let passed
+    let resultReport
     try {
       passed = logger.outbound(progress.totalResult)
-      // const resultReport = await report.outbound(progress.totalResult)
+      resultReport = await report.outbound(progress.totalResult)
       let slackReportURL = resultReport.uploadedReportURL
       // SaveReport status
       /* istanbul ignore next */
