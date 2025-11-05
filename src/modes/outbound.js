@@ -273,8 +273,6 @@ const handleIncomingProgress = async (progress) => {
   } else {
     updateTotalProgressCounts(progress)
     printProgress(progress)
-    console.log(fStr.green(`Not expected progress.status: ${progress?.status}`))
-    await slackBroadcast.sendSlackNotification(progress?.totalResult, null)
   }
 }
 
