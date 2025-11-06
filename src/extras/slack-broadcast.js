@@ -93,16 +93,18 @@ const generateSlackBlocks = (progress, reportURL) => {
 
   const isPassed = (totalAssertionsCount === totalPassedAssertionsCount) && (totalPassedAssertionsCount > 0)
 
+  const PRTI = progress?.runtimeInformation || {}
+
   if (config.briefSummaryPrefix) {
     const top5FailedTestCases = failedTestCases.sort((a, b) => b.failedAssertions - a.failedAssertions).slice(0, 5)
 
     const failedStr = totalAssertionsCount
       ? `${totalAssertionsCount - totalPassedAssertionsCount}/${totalAssertionsCount}(${(100 * ((totalAssertionsCount - totalPassedAssertionsCount) / totalAssertionsCount)).toFixed(2)}%)`
-      : '0/0(%)'
+      : `${PRTI.failedAssertions || 0}/${PRTI.failedAssertions + PRTI.passedAssertions + PRTI.skippedAssertions}(-%)`
 
-    const testCountStr = `${progress.test_cases?.length || progress.runtimeInformation?.totalTestCases || 0}`
+    const testCountStr = `${progress.test_cases?.length || PRTI.totalTestCases || 0}`
 
-    const reqCountStr = String(totalRequestsCount || progress.runtimeInformation?.totalRequests || 0)
+    const reqCountStr = String(totalRequestsCount || PRTI.totalRequests || 0)
 
     return [{
       type: 'rich_text',
