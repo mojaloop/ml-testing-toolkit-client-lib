@@ -38,6 +38,8 @@ const releaseCd = require('../extras/release-cd')
 const TemplateGenerator = require('../utils/templateGenerator')
 const { TraceHeaderUtils } = require('@mojaloop/ml-testing-toolkit-shared-lib')
 
+let currentProgress // is used in handleTimeout
+
 const totalProgress = {
   totalTestCases: 0,
   totalRequests: 0,
@@ -211,7 +213,9 @@ const sendTemplate = async (sessionId) => {
  * @returns {Promise<void>}
  */
 const handleIncomingProgress = async (progress) => {
+  currentProgress = progress
   const config = objectStore.get('config')
+
   if (progress.status === 'FINISHED') {
     let passed
     try {
@@ -256,8 +260,23 @@ const handleIncomingProgress = async (progress) => {
   }
 }
 
+/* istanbul ignore next */
+const handleTimeout = async () => {
+  try {
+    console.log('Tests execution timed out....')
+    printTotalProgressCounts()
+    const testReport = await report.outbound(currentProgress.totalResult)
+    const slackReportURL = testReport.uploadedReportURL
+    console.log(`handleTimeout slackReportURL: ${slackReportURL}`)
+    await slackBroadcast.sendTimeoutSlackNotification(currentProgress.totalResult, slackReportURL)
+  } catch (err) {
+    console.log(fStr.red(`Error on handling tests timeout: ${err?.message}`))
+  }
+}
+
 module.exports = {
   sendTemplate,
   handleIncomingProgress,
-  determineTemplateName
+  handleTimeout,
+  determineTemplateName,
 }

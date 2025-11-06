@@ -44,10 +44,11 @@ const millisecondsToTime = (milliseconds) => {
  */
 const generateSlackBlocks = (progress, reportURL) => {
   const slackBlocks = []
+  const failedTestCases = []
   let totalAssertionsCount = 0
   let totalPassedAssertionsCount = 0
   let totalRequestsCount = 0
-  const failedTestCases = []
+
   progress.test_cases.forEach(testCase => {
     // console.log(fStr.yellow(testCase.name))
     totalRequestsCount += testCase.requests.length
@@ -155,6 +156,7 @@ const generateSlackBlocks = (progress, reportURL) => {
       }
     }
   }
+
   let extramSummaryText = ''
   if (config.extraSummaryInformation) {
     const extraSummaryInformationArr = config.extraSummaryInformation.split(',')
@@ -171,6 +173,7 @@ const generateSlackBlocks = (progress, reportURL) => {
     },
     ...additionalParams
   })
+
   if (reportURL) {
     slackBlocks.push({
       type: 'section',
@@ -183,6 +186,7 @@ const generateSlackBlocks = (progress, reportURL) => {
   slackBlocks.push({
     type: 'divider'
   })
+
   return slackBlocks
 }
 
@@ -205,6 +209,20 @@ const sendSlackNotification = async (progress, reportURL = 'http://localhost/') 
 
   if (needToNotifyFailed(slackWebhookUrlForFailed, progress)) {
     await sendWebhook(slackWebhookUrlForFailed, 'Failed Tests Report', blocks)
+  }
+}
+
+/* istanbul ignore next */
+const sendTimeoutSlackNotification = async (progress, reportURL = 'http://localhost/') => {
+  const text = 'Timeout Tests Report'
+  const blocks = generateSlackBlocks(progress, reportURL)
+
+  if (config.slackWebhookUrl) {
+    await sendWebhook(config.slackWebhookUrl, text, blocks)
+  }
+
+  if (config.slackWebhookUrlForFailed) {
+    await sendWebhook(config.slackWebhookUrlForFailed, text, blocks)
   }
 }
 
@@ -232,6 +250,7 @@ const needToNotifyFailed = (webhookUrl, progress) => {
 
 module.exports = {
   sendSlackNotification,
+  sendTimeoutSlackNotification,
   sendWebhook,
   needToNotifyFailed
 }

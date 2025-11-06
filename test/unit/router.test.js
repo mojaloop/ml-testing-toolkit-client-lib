@@ -32,6 +32,7 @@
 
 const spyExit = jest.spyOn(process, 'exit').mockImplementation(() => {})
 const { cli } = require('../../src/router')
+const { EXIT_CODES, TESTS_EXECUTION_TIMEOUT } = require('../../src/constants');
 
 jest.mock('../../src/utils/listeners')
 jest.mock('../../src/modes/outbound')
@@ -82,8 +83,8 @@ describe('Cli client', () => {
       expect(() => {
         cli(config)
       }).not.toThrow()
-      jest.advanceTimersByTime(1000 * 60 * 15)
-      expect(spyExit).toHaveBeenCalledWith(1)
+      await jest.advanceTimersByTime(TESTS_EXECUTION_TIMEOUT)
+      expect(spyExit).toHaveBeenCalledWith(EXIT_CODES.timeout)
     })
     it('when mode is outbound and inputFile was not provided should not throw an error', async () => {
       const config = {
