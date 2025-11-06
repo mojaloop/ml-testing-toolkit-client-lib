@@ -1,7 +1,7 @@
 {
   "name": "@mojaloop/ml-testing-toolkit-client-lib",
   "description": "Testing Toolkit Client Library",
-  "version": "1.12.1-snapshot.12",
+  "version": "1.12.1-snapshot.13",
   "license": "Apache-2.0",
   "author": "Vijaya Kumar Guthi, ModusBox Inc. ",
   "contributors": [
