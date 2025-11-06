@@ -97,10 +97,10 @@ const generateSlackBlocks = (progress, reportURL) => {
     const top5FailedTestCases = failedTestCases.sort((a, b) => b.failedAssertions - a.failedAssertions).slice(0, 5)
 
     const failedStr = totalAssertionsCount
-      ?`${totalAssertionsCount - totalPassedAssertionsCount}/${totalAssertionsCount}(${(100 * ((totalAssertionsCount - totalPassedAssertionsCount) / totalAssertionsCount)).toFixed(2)}%)`
+      ? `${totalAssertionsCount - totalPassedAssertionsCount}/${totalAssertionsCount}(${(100 * ((totalAssertionsCount - totalPassedAssertionsCount) / totalAssertionsCount)).toFixed(2)}%)`
       : '0/0(%)'
 
-    const testCountStr = `${progress.test_cases?.length || progress.runtimeInformation?.totalTestCases || 0 }`
+    const testCountStr = `${progress.test_cases?.length || progress.runtimeInformation?.totalTestCases || 0}`
 
     const reqCountStr = String(totalRequestsCount || progress.runtimeInformation?.totalRequests || 0)
 
@@ -235,12 +235,11 @@ const sendTimeoutSlackNotification = async (progress, reportURL = 'http://localh
   const text = 'Timeout Tests Report'
   const blocks = generateSlackBlocks(progress, reportURL)
 
-  await Promise.all(GP_WH_URLS
-    .filter(Boolean)
-    .map(async webhookUrl => {
-      console.log(`Sending Slack notification for timeout tests to: ${webhookUrl} ...`)
-      await sendWebhook(webhookUrl, text, blocks)
-    }))
+  await Promise.all(
+    GP_WH_URLS
+      .filter(Boolean)
+      .map(whUrl => sendWebhook(whUrl, text, blocks))
+  )
 }
 
 const sendWebhook = async (url, text, blocks) => {
