@@ -39,8 +39,6 @@ const TemplateGenerator = require('../utils/templateGenerator')
 const { TraceHeaderUtils } = require('@mojaloop/ml-testing-toolkit-shared-lib')
 const { TESTS_EXECUTION_TIMEOUT } = require('../constants')
 
-// let currentProgress // is used in handleTimeout
-
 const totalProgress = {
   totalTestCases: 0,
   totalRequests: 0,
@@ -215,7 +213,6 @@ const sendTemplate = async (sessionId) => {
  * @returns {Promise<void>}
  */
 const handleIncomingProgress = async (progress) => {
-  // currentProgress = progress
   const config = objectStore.get('config')
 
   if (progress.status === 'FINISHED') {
@@ -266,36 +263,26 @@ const handleIncomingProgress = async (progress) => {
 const handleTimeout = async () => {
   try {
     console.log('Tests execution timed out....')
-    printTotalProgressCounts()
-    console.log('')
-
     const config = objectStore.get('config')
-
-    // Build minimal report with summary statistics
     const now = Date.now()
-    const startedTS = now - TESTS_EXECUTION_TIMEOUT
 
-    const fallbackReport = {
+    const timeoutReport = {
       name: config.reportName || determineTemplateName(config.inputFiles.split(',')),
       runtimeInformation: {
         testReportId: `timeout-${now}`,
-        completedTimeISO: new Date(now).toISOString(),
-        startedTime: new Date(startedTS).toUTCString(),
+        startedTime: new Date(now - TESTS_EXECUTION_TIMEOUT).toUTCString(),
         completedTime: new Date(now).toUTCString(),
-        completedTimeUTC: new Date(now).toUTCString(),
-        startedTS,
-        completedTS: now,
         runDurationMs: TESTS_EXECUTION_TIMEOUT,
-        totalAssertions: totalProgress.totalAssertions || 0,
-        totalPassedAssertions: totalProgress.passedAssertions || 0
+        totalAssertions: totalProgress.totalAssertions,
+        totalPassedAssertions: totalProgress.passedAssertions
       },
-      test_cases: [], // Cannot reconstruct
+      test_cases: [], // think if we need to reconstruct passed test cases
       status: 'TERMINATED',
       isTimeout: true
     }
-    console.log(fStr.yellow(`⚠️ Summary (timeout): ${totalProgress.passedAssertions}/${totalProgress.totalAssertions} assertions passed`))
+    console.log(fStr.yellow(`⚠️  Summary (timeout): ${totalProgress.passedAssertions}/${totalProgress.totalAssertions} assertions passed`))
 
-    await slackBroadcast.sendTimeoutSlackNotification(fallbackReport)
+    await slackBroadcast.sendTimeoutSlackNotification(timeoutReport)
   } catch (err) {
     console.log(fStr.red(`Error on handling tests timeout: ${err?.message}`))
   }
