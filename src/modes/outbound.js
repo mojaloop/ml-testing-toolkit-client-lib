@@ -39,7 +39,7 @@ const TemplateGenerator = require('../utils/templateGenerator')
 const { TraceHeaderUtils } = require('@mojaloop/ml-testing-toolkit-shared-lib')
 const { TESTS_EXECUTION_TIMEOUT } = require('../constants')
 
-let currentProgress // is used in handleTimeout
+// let currentProgress // is used in handleTimeout
 
 const totalProgress = {
   totalTestCases: 0,
@@ -215,7 +215,7 @@ const sendTemplate = async (sessionId) => {
  * @returns {Promise<void>}
  */
 const handleIncomingProgress = async (progress) => {
-  currentProgress = progress
+  // currentProgress = progress
   const config = objectStore.get('config')
 
   if (progress.status === 'FINISHED') {
@@ -291,7 +291,7 @@ const handleTimeout = async () => {
       },
       test_cases: [], // Cannot reconstruct
       status: 'TERMINATED',
-      isTimeout: true,
+      isTimeout: true
     }
     console.log(fStr.yellow(`⚠️ Summary (timeout): ${totalProgress.passedAssertions}/${totalProgress.totalAssertions} assertions passed`))
 
