@@ -191,6 +191,7 @@ const sendTemplate = async (sessionId) => {
  * @property {string} status
  * @property {Object} totalResult
  * @property {Object} saveReportStatus
+ * @property {Boolean} [isTimeout]
  * @property {unknown} [otherFields] - see ml-testing-toolkit repo.
  */
 
@@ -266,54 +267,35 @@ const handleTimeout = async () => {
   try {
     console.log('Tests execution timed out....')
     printTotalProgressCounts()
+    console.log('')
 
     const config = objectStore.get('config')
 
-    // Check if we have a complete totalResult (unlikely during timeout)
-    if (currentProgress?.totalResult?.test_cases?.length > 0 &&
-        currentProgress.totalResult.runtimeInformation?.completedTimeISO) {
-      // We have complete data - use it
-      console.log('Using available totalResult data')
-      const testReport = await report.outbound(currentProgress.totalResult)
-      const slackReportURL = testReport?.uploadedReportURL
-      await slackBroadcast.sendTimeoutSlackNotification(currentProgress.totalResult, slackReportURL)
-    } else {
-      // Build minimal fallback report with summary statistics
-      const now = Date.now()
-      const startedTS = now - TESTS_EXECUTION_TIMEOUT
+    // Build minimal report with summary statistics
+    const now = Date.now()
+    const startedTS = now - TESTS_EXECUTION_TIMEOUT
 
-      const fallbackReport = {
-        name: config.reportName || determineTemplateName(config.inputFiles.split(',')),
-        runtimeInformation: {
-          testReportId: `timeout-${now}`,
-          completedTimeISO: new Date(now).toISOString(),
-          startedTime: new Date(startedTS).toUTCString(),
-          completedTime: new Date(now).toUTCString(),
-          completedTimeUTC: new Date(now).toUTCString(),
-          startedTS,
-          completedTS: now,
-          runDurationMs: TESTS_EXECUTION_TIMEOUT,
-          totalAssertions: totalProgress.totalAssertions || 0,
-          totalPassedAssertions: totalProgress.passedAssertions || 0
-        },
-        test_cases: [], // Cannot reconstruct - empty array
-        status: 'TERMINATED'
-      }
-
-      console.log(fStr.yellow('⚠️  Timeout: Cannot generate detailed report - test execution incomplete'))
-      console.log(fStr.cyan(`Summary: ${totalProgress.passedAssertions}/${totalProgress.totalAssertions} assertions passed`))
-
-      // Only generate report if format is 'json' (HTML/printhtml require backend processing with complete data)
-      let testReport = null
-      if (config.reportFormat === 'json') {
-        testReport = await report.outbound(fallbackReport)
-      } else {
-        console.log(fStr.yellow('⚠️  HTML/printhtml reports unavailable for timeout - use --report-format json'))
-      }
-
-      const slackReportURL = testReport?.uploadedReportURL
-      await slackBroadcast.sendTimeoutSlackNotification(fallbackReport, slackReportURL)
+    const fallbackReport = {
+      name: config.reportName || determineTemplateName(config.inputFiles.split(',')),
+      runtimeInformation: {
+        testReportId: `timeout-${now}`,
+        completedTimeISO: new Date(now).toISOString(),
+        startedTime: new Date(startedTS).toUTCString(),
+        completedTime: new Date(now).toUTCString(),
+        completedTimeUTC: new Date(now).toUTCString(),
+        startedTS,
+        completedTS: now,
+        runDurationMs: TESTS_EXECUTION_TIMEOUT,
+        totalAssertions: totalProgress.totalAssertions || 0,
+        totalPassedAssertions: totalProgress.passedAssertions || 0
+      },
+      test_cases: [], // Cannot reconstruct
+      status: 'TERMINATED',
+      isTimeout: true,
     }
+    console.log(fStr.yellow(`⚠️ Summary (timeout): ${totalProgress.passedAssertions}/${totalProgress.totalAssertions} assertions passed`))
+
+    await slackBroadcast.sendTimeoutSlackNotification(fallbackReport)
   } catch (err) {
     console.log(fStr.red(`Error on handling tests timeout: ${err?.message}`))
   }
