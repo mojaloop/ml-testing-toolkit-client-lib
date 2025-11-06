@@ -26,12 +26,12 @@
  * Georgi Logodazhki <georgi.logodazhki@modusbox.com> (Original Author)
  --------------
  ******/
-const fs = require('fs')
-const _ = require('lodash')
-const objectStore = require('./objectStore')
-const { TraceHeaderUtils } = require('@mojaloop/ml-testing-toolkit-shared-lib')
 
-const TESTS_EXECUTION_TIMEOUT = 1000 * 60 * 15 // 15min timout
+const fs = require('node:fs')
+const _ = require('lodash')
+const { TraceHeaderUtils } = require('@mojaloop/ml-testing-toolkit-shared-lib')
+const { EXIT_CODES, TESTS_EXECUTION_TIMEOUT } = require('./constants')
+const objectStore = require('./objectStore')
 
 const cli = (commanderOptions) => {
   const configFile = {
@@ -87,10 +87,11 @@ const cli = (commanderOptions) => {
           // Generate a session ID
           const sessionId = TraceHeaderUtils.generateSessionId()
           require('./utils/listeners').outbound(sessionId)
-          require('./modes/outbound').sendTemplate(sessionId)
-          setTimeout(() => {
-            console.log('Tests execution timed out....')
-            process.exit(1)
+          const { sendTemplate, handleTimeout } = require('./modes/outbound')
+          sendTemplate(sessionId)
+          setTimeout(async () => {
+            await handleTimeout()
+            process.exit(EXIT_CODES.timeout)
           }, TESTS_EXECUTION_TIMEOUT)
         } else {
           console.log('error: required option \'-e, --environment-file <environmentFile>\' not specified')

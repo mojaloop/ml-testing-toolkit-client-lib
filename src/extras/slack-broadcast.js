@@ -44,15 +44,17 @@ const millisecondsToTime = (milliseconds) => {
  */
 const generateSlackBlocks = (progress, reportURL) => {
   const slackBlocks = []
+  const failedTestCases = []
   let totalAssertionsCount = 0
   let totalPassedAssertionsCount = 0
   let totalRequestsCount = 0
-  const failedTestCases = []
+
   progress.test_cases.forEach(testCase => {
     // console.log(fStr.yellow(testCase.name))
     totalRequestsCount += testCase.requests.length
     let testCaseAssertionsCount = 0
     let testCasePassedAssertionsCount = 0
+
     testCase.requests.forEach(req => {
       const passedAssertionsCount = req.request.tests && req.request.tests.passedAssertionsCount ? req.request.tests.passedAssertionsCount : 0
       const assertionsCount = req.request.tests && req.request.tests.assertions && req.request.tests.assertions.length ? req.request.tests.assertions.length : 0
@@ -61,6 +63,7 @@ const generateSlackBlocks = (progress, reportURL) => {
       testCaseAssertionsCount += assertionsCount
       testCasePassedAssertionsCount += passedAssertionsCount
     })
+
     if (testCaseAssertionsCount !== testCasePassedAssertionsCount) {
       failedTestCases.push({
         name: testCase.name,
@@ -83,6 +86,8 @@ const generateSlackBlocks = (progress, reportURL) => {
   // totalAssertionsCount = totalPassedAssertionsCount
   // failedTestCases.length = 0
 
+  const isPassed = (totalAssertionsCount === totalPassedAssertionsCount) && (totalPassedAssertionsCount > 0)
+
   if (config.briefSummaryPrefix) {
     const top5FailedTestCases = failedTestCases.sort((a, b) => b.failedAssertions - a.failedAssertions).slice(0, 5)
     return [{
@@ -90,7 +95,7 @@ const generateSlackBlocks = (progress, reportURL) => {
       elements: [{
         type: 'rich_text_section',
         elements: [
-          { type: 'text', text: `${totalAssertionsCount === totalPassedAssertionsCount ? '✅' : '⚠️'}${config.briefSummaryPrefix || ''} ` },
+          { type: 'text', text: `${isPassed ? '✅' : (progress.isTimeout ? '⌛' : '⚠️')}${config.briefSummaryPrefix || ''} ` },
           reportURL ? { type: 'link', url: reportURL, text: config.reportName } : { type: 'text', text: config.reportName },
           { type: 'text', text: ' tests: ' },
           { type: 'text', text: String(progress.test_cases.length), style: { code: true } },
@@ -138,7 +143,7 @@ const generateSlackBlocks = (progress, reportURL) => {
   summaryText += '>Runtime duration: *' + `${progress.runtimeInformation.runDurationMs} ms` + '*\n'
 
   const additionalParams = {}
-  if (totalAssertionsCount === totalPassedAssertionsCount) {
+  if (isPassed) {
     if (config.slackPassedImage) {
       additionalParams.accessory = {
         type: 'image',
@@ -155,6 +160,7 @@ const generateSlackBlocks = (progress, reportURL) => {
       }
     }
   }
+
   let extramSummaryText = ''
   if (config.extraSummaryInformation) {
     const extraSummaryInformationArr = config.extraSummaryInformation.split(',')
@@ -171,6 +177,7 @@ const generateSlackBlocks = (progress, reportURL) => {
     },
     ...additionalParams
   })
+
   if (reportURL) {
     slackBlocks.push({
       type: 'section',
@@ -183,6 +190,7 @@ const generateSlackBlocks = (progress, reportURL) => {
   slackBlocks.push({
     type: 'divider'
   })
+
   return slackBlocks
 }
 
@@ -205,6 +213,20 @@ const sendSlackNotification = async (progress, reportURL = 'http://localhost/') 
 
   if (needToNotifyFailed(slackWebhookUrlForFailed, progress)) {
     await sendWebhook(slackWebhookUrlForFailed, 'Failed Tests Report', blocks)
+  }
+}
+
+/* istanbul ignore next */
+const sendTimeoutSlackNotification = async (progress, reportURL = 'http://localhost/') => {
+  const text = 'Timeout Tests Report'
+  const blocks = generateSlackBlocks(progress, reportURL)
+
+  if (config.slackWebhookUrl) {
+    await sendWebhook(config.slackWebhookUrl, text, blocks)
+  }
+
+  if (config.slackWebhookUrlForFailed) {
+    await sendWebhook(config.slackWebhookUrlForFailed, text, blocks)
   }
 }
 
@@ -232,6 +254,7 @@ const needToNotifyFailed = (webhookUrl, progress) => {
 
 module.exports = {
   sendSlackNotification,
+  sendTimeoutSlackNotification,
   sendWebhook,
   needToNotifyFailed
 }

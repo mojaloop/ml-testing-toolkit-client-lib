@@ -37,6 +37,7 @@ const slackBroadcast = require('../extras/slack-broadcast')
 const releaseCd = require('../extras/release-cd')
 const TemplateGenerator = require('../utils/templateGenerator')
 const { TraceHeaderUtils } = require('@mojaloop/ml-testing-toolkit-shared-lib')
+const { TESTS_EXECUTION_TIMEOUT } = require('../constants')
 
 const totalProgress = {
   totalTestCases: 0,
@@ -188,6 +189,7 @@ const sendTemplate = async (sessionId) => {
  * @property {string} status
  * @property {Object} totalResult
  * @property {Object} saveReportStatus
+ * @property {Boolean} [isTimeout]
  * @property {unknown} [otherFields] - see ml-testing-toolkit repo.
  */
 
@@ -212,6 +214,7 @@ const sendTemplate = async (sessionId) => {
  */
 const handleIncomingProgress = async (progress) => {
   const config = objectStore.get('config')
+
   if (progress.status === 'FINISHED') {
     let passed
     try {
@@ -256,8 +259,38 @@ const handleIncomingProgress = async (progress) => {
   }
 }
 
+// istanbul ignore next
+const handleTimeout = async () => {
+  try {
+    console.log('Tests execution timed out....')
+    const config = objectStore.get('config')
+    const now = Date.now()
+
+    const timeoutReport = {
+      name: config.reportName || determineTemplateName(config.inputFiles.split(',')),
+      runtimeInformation: {
+        testReportId: `timeout-${now}`,
+        startedTime: new Date(now - TESTS_EXECUTION_TIMEOUT).toUTCString(),
+        completedTime: new Date(now).toUTCString(),
+        runDurationMs: TESTS_EXECUTION_TIMEOUT,
+        totalAssertions: totalProgress.totalAssertions,
+        totalPassedAssertions: totalProgress.passedAssertions
+      },
+      test_cases: [], // think if we need to reconstruct passed test cases
+      status: 'TERMINATED',
+      isTimeout: true
+    }
+    console.log(fStr.yellow(`⚠️  Summary (timeout): ${totalProgress.passedAssertions}/${totalProgress.totalAssertions} assertions passed`))
+
+    await slackBroadcast.sendTimeoutSlackNotification(timeoutReport)
+  } catch (err) {
+    console.log(fStr.red(`Error on handling tests timeout: ${err?.message}`))
+  }
+}
+
 module.exports = {
   sendTemplate,
   handleIncomingProgress,
+  handleTimeout,
   determineTemplateName
 }
