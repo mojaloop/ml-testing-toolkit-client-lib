@@ -31,6 +31,11 @@ const objectStore = require('../objectStore')
 
 const config = objectStore.get('config')
 
+const GP_WH_URLS = [
+  config.slackWebhookUrl,
+  config.slackWebhookUrlForFailed
+]
+
 const millisecondsToTime = (milliseconds) => {
   const seconds = Math.floor(milliseconds / 1000)
   const minutes = Math.floor(seconds / 60)
@@ -90,19 +95,28 @@ const generateSlackBlocks = (progress, reportURL) => {
 
   if (config.briefSummaryPrefix) {
     const top5FailedTestCases = failedTestCases.sort((a, b) => b.failedAssertions - a.failedAssertions).slice(0, 5)
+
+    const failedStr = totalAssertionsCount
+      ?`${totalAssertionsCount - totalPassedAssertionsCount}/${totalAssertionsCount}(${(100 * ((totalAssertionsCount - totalPassedAssertionsCount) / totalAssertionsCount)).toFixed(2)}%)`
+      : '0/0(%)'
+
+    const testCountStr = `${progress.test_cases?.length || progress.runtimeInformation?.totalTestCases || 0 }`
+
+    const reqCountStr = String(totalRequestsCount || progress.runtimeInformation?.totalRequests || 0)
+
     return [{
       type: 'rich_text',
       elements: [{
         type: 'rich_text_section',
         elements: [
-          { type: 'text', text: `${isPassed ? '✅' : (progress.isTimeout ? '⌛' : '⚠️')}${config.briefSummaryPrefix || ''} ` },
+          { type: 'text', text: `${isPassed ? '✅' : (progress.isTimeout ? '⌛❗️' : '⚠️')}${config.briefSummaryPrefix || ''} ` },
           reportURL ? { type: 'link', url: reportURL, text: config.reportName } : { type: 'text', text: config.reportName },
           { type: 'text', text: ' tests: ' },
-          { type: 'text', text: String(progress.test_cases.length), style: { code: true } },
+          { type: 'text', text: testCountStr, style: { code: true } },
           { type: 'text', text: ', requests: ' },
-          { type: 'text', text: String(totalRequestsCount), style: { code: true } },
+          { type: 'text', text: reqCountStr, style: { code: true } },
           { type: 'text', text: ', failed: ' },
-          { type: 'text', text: `${totalAssertionsCount - totalPassedAssertionsCount}/${totalAssertionsCount}(${(100 * ((totalAssertionsCount - totalPassedAssertionsCount) / totalAssertionsCount)).toFixed(2)}%)`, style: { code: true } },
+          { type: 'text', text: failedStr, style: { code: true } },
           { type: 'text', text: ', duration: ' },
           { type: 'text', text: millisecondsToTime(progress.runtimeInformation.runDurationMs), style: { code: true } },
           top5FailedTestCases.length > 0 && { type: 'text', text: ', top 5 failed test cases:' }
@@ -221,13 +235,12 @@ const sendTimeoutSlackNotification = async (progress, reportURL = 'http://localh
   const text = 'Timeout Tests Report'
   const blocks = generateSlackBlocks(progress, reportURL)
 
-  if (config.slackWebhookUrl) {
-    await sendWebhook(config.slackWebhookUrl, text, blocks)
-  }
-
-  if (config.slackWebhookUrlForFailed) {
-    await sendWebhook(config.slackWebhookUrlForFailed, text, blocks)
-  }
+  await Promise.all(GP_WH_URLS
+    .filter(Boolean)
+    .map(async webhookUrl => {
+      console.log(`Sending Slack notification for timeout tests to: ${webhookUrl} ...`)
+      await sendWebhook(webhookUrl, text, blocks)
+    }))
 }
 
 const sendWebhook = async (url, text, blocks) => {

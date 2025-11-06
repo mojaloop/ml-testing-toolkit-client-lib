@@ -262,9 +262,9 @@ const handleIncomingProgress = async (progress) => {
 // istanbul ignore next
 const handleTimeout = async () => {
   try {
-    console.log('Tests execution timed out....')
     const config = objectStore.get('config')
     const now = Date.now()
+    console.log(`Tests execution timed out  [now: ${now}]`)
 
     const timeoutReport = {
       name: config.reportName || determineTemplateName(config.inputFiles.split(',')),
@@ -273,8 +273,7 @@ const handleTimeout = async () => {
         startedTime: new Date(now - TESTS_EXECUTION_TIMEOUT).toUTCString(),
         completedTime: new Date(now).toUTCString(),
         runDurationMs: TESTS_EXECUTION_TIMEOUT,
-        totalAssertions: totalProgress.totalAssertions,
-        totalPassedAssertions: totalProgress.passedAssertions
+        ...totalProgress
       },
       test_cases: [], // think if we need to reconstruct passed test cases
       status: 'TERMINATED',
@@ -284,7 +283,7 @@ const handleTimeout = async () => {
 
     await slackBroadcast.sendTimeoutSlackNotification(timeoutReport)
   } catch (err) {
-    console.log(fStr.red(`Error on handling tests timeout: ${err?.message}`))
+    console.log(fStr.red(`\nError on handling tests timeout: ${err?.message}`))
   }
 }
 
