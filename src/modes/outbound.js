@@ -260,7 +260,6 @@ const handleIncomingProgress = async (progress) => {
   }
 }
 
-/* istanbul ignore next */
 const handleTimeout = async () => {
   try {
     console.log('Tests execution timed out....')

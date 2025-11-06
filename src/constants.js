@@ -1,6 +1,6 @@
 const { env } = require('node:process')
 
-const TESTS_EXECUTION_TIMEOUT = parseInt(env.TESTS_EXECUTION_TIMEOUT, 10) || 1000 * 60 * 15 // 15min timout
+const TESTS_EXECUTION_TIMEOUT = parseInt(env.TESTS_EXECUTION_TIMEOUT, 10) || 1000 * 60 * 2
 
 const EXIT_CODES = Object.freeze({
   success: 0,
