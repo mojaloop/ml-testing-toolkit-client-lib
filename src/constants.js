@@ -10,5 +10,5 @@ const EXIT_CODES = Object.freeze({
 
 module.exports = {
   EXIT_CODES,
-  TESTS_EXECUTION_TIMEOUT,
+  TESTS_EXECUTION_TIMEOUT
 }

@@ -30,7 +30,7 @@
 const fs = require('node:fs')
 const _ = require('lodash')
 const { TraceHeaderUtils } = require('@mojaloop/ml-testing-toolkit-shared-lib')
-const { EXIT_CODES, TESTS_EXECUTION_TIMEOUT } = require('./constants');
+const { EXIT_CODES, TESTS_EXECUTION_TIMEOUT } = require('./constants')
 const objectStore = require('./objectStore')
 
 const cli = (commanderOptions) => {

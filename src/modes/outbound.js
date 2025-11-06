@@ -278,5 +278,5 @@ module.exports = {
   sendTemplate,
   handleIncomingProgress,
   handleTimeout,
-  determineTemplateName,
+  determineTemplateName
 }
