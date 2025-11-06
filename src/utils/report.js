@@ -48,6 +48,7 @@ const report = async (data, reportType) => {
   const config = objectStore.get('config')
   let reportData
   let reportFilename
+
   switch (config.reportFormat) {
     case 'none':
       return returnInfo
@@ -86,6 +87,7 @@ const report = async (data, reportType) => {
       console.log('reportFormat is not supported')
       return
   }
+
   if (config.reportTarget) {
     const reportTargetRe = /(.*):\/\/(.*)/g
     const reportTargetArr = reportTargetRe.exec(config.reportTarget)
