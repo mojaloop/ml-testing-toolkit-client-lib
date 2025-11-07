@@ -31,7 +31,7 @@ const objectStore = require('../objectStore')
 
 const config = objectStore.get('config')
 
-const GP_WH_URLS = [
+const FAILED_GP_WH_URLS = [
   config.slackWebhookUrl,
   config.slackWebhookUrlForFailed
 ]
@@ -238,7 +238,7 @@ const sendTimeoutSlackNotification = async (progress, reportURL = 'http://localh
   const blocks = generateSlackBlocks(progress, reportURL)
 
   await Promise.all(
-    GP_WH_URLS
+    FAILED_GP_WH_URLS
       .filter(Boolean)
       .map(whUrl => sendWebhook(whUrl, text, blocks))
   )

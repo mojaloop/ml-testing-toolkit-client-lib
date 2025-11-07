@@ -279,7 +279,7 @@ const handleTimeout = async () => {
       status: 'TERMINATED',
       isTimeout: true
     }
-    console.log(fStr.yellow(`⚠️  Summary (timeout): ${totalProgress.passedAssertions}/${totalProgress.totalAssertions} assertions passed`))
+    console.log(fStr.yellow(`⚠️  Summary (timeout): ${totalProgress.failedAssertions}/${totalProgress.totalAssertions} assertions failed`))
 
     await slackBroadcast.sendTimeoutSlackNotification(timeoutReport)
   } catch (err) {
