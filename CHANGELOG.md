@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.12.2](https://github.com/mojaloop/ml-testing-toolkit-client-lib/compare/v1.12.1...v1.12.2) (2025-11-07)
+
+
+### Bug Fixes
+
+* **csi-1929:** improved timeout Slack report ([#44](https://github.com/mojaloop/ml-testing-toolkit-client-lib/issues/44)) ([921a9e9](https://github.com/mojaloop/ml-testing-toolkit-client-lib/commit/921a9e9d692fd134f9f85d752be80ce925a7735a))
+
+
+### Chore
+
+* **sbom:** update sbom [skip ci] ([e80805c](https://github.com/mojaloop/ml-testing-toolkit-client-lib/commit/e80805c5f5ac47e60d7189074b47b622d07a06fe))
+
 ### [1.12.1](https://github.com/mojaloop/ml-testing-toolkit-client-lib/compare/v1.12.0...v1.12.1) (2025-11-06)
 
 
