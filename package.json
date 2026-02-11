@@ -75,7 +75,7 @@
     "@slack/webhook": "7.0.6",
     "atob": "2.1.2",
     "aws-sdk": "2.1692.0",
-    "axios": "1.13.2",
+    "axios": "1.13.5",
     "cli-table3": "0.6.5",
     "commander": "14.0.2",
     "dotenv": "17.2.3",
