@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.12.3](https://github.com/mojaloop/ml-testing-toolkit-client-lib/compare/v1.12.2...v1.12.3) (2026-02-26)
+
+
+### Chore
+
+* **sbom:** update sbom [skip ci] ([685d8a6](https://github.com/mojaloop/ml-testing-toolkit-client-lib/commit/685d8a65302827d438ea459a8bc3b834433fb327))
+* **security:** update CircleCI orb to 1.1.16 and resolve minimatch CVE ([#54](https://github.com/mojaloop/ml-testing-toolkit-client-lib/issues/54)) ([27f8920](https://github.com/mojaloop/ml-testing-toolkit-client-lib/commit/27f892044dc9b4a444dd40581397f40dc6869458))
+
 ### [1.12.2](https://github.com/mojaloop/ml-testing-toolkit-client-lib/compare/v1.12.1...v1.12.2) (2025-11-07)
 
 
