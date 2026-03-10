@@ -65,15 +65,15 @@
     "audit:fix": "npm audit fix",
     "generate-docs": "jsdoc -c jsdoc.json",
     "audit:check": "npx audit-ci --config ./audit-ci.jsonc",
-    "dep:check": "npx ncu -e 2",
-    "dep:update": "npx ncu -u",
+    "dep:check": "npx ncu -e 2 --target @minor-infitx",
+    "dep:update": "npx ncu -u --target @minor-infitx",
     "genexec": "pkg -t node8-win .",
     "cli": "node src/client.js",
     "release": "npx standard-version --no-verify --releaseCommitMessageFormat 'chore(release): {{currentTag}} [skip ci]'",
     "snapshot": "npx standard-version --no-verify --skip.changelog --prerelease snapshot --releaseCommitMessageFormat 'chore(snapshot): {{currentTag}}'"
   },
   "dependencies": {
-    "@mojaloop/central-services-logger": "11.10.4",
+    "@mojaloop/central-services-logger": "11.11.0-infitx.4",
     "@mojaloop/ml-testing-toolkit-shared-lib": "14.3.3",
     "@mojaloop/sdk-standard-components": "19.18.8",
     "@slack/webhook": "7.0.7",
