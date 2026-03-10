@@ -52,27 +52,39 @@ const generateSlackBlocks = (progress, reportURL) => {
   const failedTestCases = []
   let totalAssertionsCount = 0
   let totalPassedAssertionsCount = 0
+  let totalSkippedAssertionsCount = 0
+  let totalFailedAssertionsCount = 0
   let totalRequestsCount = 0
 
   progress.test_cases.forEach(testCase => {
     // console.log(fStr.yellow(testCase.name))
     totalRequestsCount += testCase.requests.length
-    let testCaseAssertionsCount = 0
-    let testCasePassedAssertionsCount = 0
+    let testCaseFailedAssertionsCount = 0
 
     testCase.requests.forEach(req => {
-      const passedAssertionsCount = req.request.tests && req.request.tests.passedAssertionsCount ? req.request.tests.passedAssertionsCount : 0
       const assertionsCount = req.request.tests && req.request.tests.assertions && req.request.tests.assertions.length ? req.request.tests.assertions.length : 0
+      const passedAssertionsCount = req.request.tests && req.request.tests.assertions
+        ? req.request.tests.assertions.filter(assertion => assertion.resultStatus && assertion.resultStatus.status === 'SUCCESS').length
+        : req.request.tests && Number.isInteger(req.request.tests.passedAssertionsCount)
+          ? req.request.tests.passedAssertionsCount
+          : 0
+      const skippedAssertionsCount = req.request.tests && Number.isInteger(req.request.tests.skippedAssertionsCount)
+        ? req.request.tests.skippedAssertionsCount
+        : req.request.tests && req.request.tests.assertions
+          ? req.request.tests.assertions.filter(assertion => assertion.resultStatus && assertion.resultStatus.status === 'SKIPPED').length
+          : 0
+      const failedAssertionsCount = Math.max(assertionsCount - passedAssertionsCount - skippedAssertionsCount, 0)
       totalAssertionsCount += assertionsCount
       totalPassedAssertionsCount += passedAssertionsCount
-      testCaseAssertionsCount += assertionsCount
-      testCasePassedAssertionsCount += passedAssertionsCount
+      totalSkippedAssertionsCount += skippedAssertionsCount
+      totalFailedAssertionsCount += failedAssertionsCount
+      testCaseFailedAssertionsCount += failedAssertionsCount
     })
 
-    if (testCaseAssertionsCount !== testCasePassedAssertionsCount) {
+    if (testCaseFailedAssertionsCount > 0) {
       failedTestCases.push({
         name: testCase.name,
-        failedAssertions: testCaseAssertionsCount - testCasePassedAssertionsCount
+        failedAssertions: testCaseFailedAssertionsCount
       })
     }
     // const passed = testCasePassedAssertionsCount === testCaseAssertionsCount
@@ -91,7 +103,7 @@ const generateSlackBlocks = (progress, reportURL) => {
   // totalAssertionsCount = totalPassedAssertionsCount
   // failedTestCases.length = 0
 
-  const isPassed = (totalAssertionsCount === totalPassedAssertionsCount) && (totalPassedAssertionsCount > 0)
+  const isPassed = (totalFailedAssertionsCount === 0) && (totalPassedAssertionsCount > 0)
 
   const PRTI = progress?.runtimeInformation || {}
 
@@ -99,7 +111,7 @@ const generateSlackBlocks = (progress, reportURL) => {
     const top5FailedTestCases = failedTestCases.sort((a, b) => b.failedAssertions - a.failedAssertions).slice(0, 5)
 
     const failedStr = totalAssertionsCount
-      ? `${totalAssertionsCount - totalPassedAssertionsCount}/${totalAssertionsCount}(${(100 * ((totalAssertionsCount - totalPassedAssertionsCount) / totalAssertionsCount)).toFixed(2)}%)`
+      ? `${totalFailedAssertionsCount}/${totalAssertionsCount}(${(100 * (totalFailedAssertionsCount / totalAssertionsCount)).toFixed(2)}%)`
       : `${PRTI.failedAssertions || 0}/${PRTI.failedAssertions + PRTI.passedAssertions + PRTI.skippedAssertions}(-%)`
 
     const testCountStr = `${progress.test_cases?.length || PRTI.totalTestCases || 0}`
@@ -150,7 +162,8 @@ const generateSlackBlocks = (progress, reportURL) => {
 
   summaryText += '>Total assertions: *' + totalAssertionsCount + '*\n'
   summaryText += '>Passed assertions: *' + totalPassedAssertionsCount + '*\n'
-  summaryText += '>Failed assertions: *' + (totalAssertionsCount - totalPassedAssertionsCount) + '*\n'
+  summaryText += '>Skipped assertions: *' + totalSkippedAssertionsCount + '*\n'
+  summaryText += '>Failed assertions: *' + totalFailedAssertionsCount + '*\n'
   summaryText += '>Total requests: *' + totalRequestsCount + '*\n'
   summaryText += '>Total test cases: *' + progress.test_cases.length + '*\n'
   summaryText += '>Passed percentage: *' + `${(100 * (totalPassedAssertionsCount / totalAssertionsCount)).toFixed(2)}%` + '*\n'
@@ -189,7 +202,7 @@ const generateSlackBlocks = (progress, reportURL) => {
     type: 'section',
     text: {
       type: 'mrkdwn',
-      text: '*Test Result:*' + ((totalAssertionsCount === totalPassedAssertionsCount) ? ' `PASSED` ' : ' `FAILED` ') + '\n' + extramSummaryText + summaryText
+      text: '*Test Result:*' + (isPassed ? ' `PASSED` ' : ' `FAILED` ') + '\n' + extramSummaryText + summaryText
     },
     ...additionalParams
   })
@@ -261,9 +274,26 @@ const sendWebhook = async (url, text, blocks) => {
  * @returns {boolean}
  */
 const needToNotifyFailed = (webhookUrl, progress) => {
-  return webhookUrl && (!progress?.runtimeInformation?.totalAssertions
-    ? true
-    : progress.runtimeInformation.totalPassedAssertions !== progress.runtimeInformation.totalAssertions)
+  if (!webhookUrl) {
+    return false
+  }
+
+  const runtimeInfo = progress?.runtimeInformation
+  if (!runtimeInfo) {
+    return true
+  }
+
+  if (Number.isInteger(runtimeInfo.totalFailedAssertions)) {
+    return runtimeInfo.totalFailedAssertions > 0
+  }
+
+  if (Number.isInteger(runtimeInfo.totalAssertions) && Number.isInteger(runtimeInfo.totalPassedAssertions)) {
+    const skippedCount = Number.isInteger(runtimeInfo.totalSkippedAssertions) ? runtimeInfo.totalSkippedAssertions : 0
+    const failedCount = Math.max(runtimeInfo.totalAssertions - runtimeInfo.totalPassedAssertions - skippedCount, 0)
+    return failedCount > 0
+  }
+
+  return true
 }
 
 module.exports = {

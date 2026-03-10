@@ -33,7 +33,7 @@ jest.mock('@slack/webhook')
 const webhook = {
   send: async () => {}
 }
-IncomingWebhook.mockImplementationOnce(() => {
+IncomingWebhook.mockImplementation(() => {
   return webhook
 })
 const SpySlackSend = jest.spyOn(webhook, 'send')
@@ -55,8 +55,25 @@ const sampleProgress = {
 }
 const sampleReportURL = 'asdf'
 
+const resetSampleProgress = () => {
+  sampleProgress.test_cases = []
+  sampleProgress.runtimeInformation = {}
+}
+
 describe('Cli client', () => {
   describe('sendSlackNotification', () => {
+    beforeEach(() => {
+      SpySlackSend.mockReset()
+      resetSampleProgress()
+      config.slackWebhookUrl = null
+      config.slackWebhookUrlForFailed = null
+      config.briefSummaryPrefix = undefined
+      config.reportName = 'Report'
+      config.extraSummaryInformation = 'info1:value1,info2:value2'
+      config.slackPassedImage = 'asdf'
+      config.slackFailedImage = 'asdf'
+    })
+
     it('When slackWebhookUrl config is null, it should do nothing', async () => {
       config.slackWebhookUrl = null
       SpySlackSend.mockResolvedValueOnce(null)
@@ -133,6 +150,72 @@ describe('Cli client', () => {
         blocks: expect.any(Array)
       }))
     })
+
+    it('When all assertions pass, it should include passed accessory and skipped assertions in summary', async () => {
+      config.briefSummaryPrefix = undefined
+      config.slackWebhookUrl = 'http://some_url'
+      sampleProgress.test_cases = [
+        {
+          requests: [
+            {
+              request: {
+                tests: {
+                  assertions: [
+                    { resultStatus: { status: 'SUCCESS' } },
+                    { resultStatus: { status: 'SUCCESS' } }
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      ]
+      sampleProgress.runtimeInformation = {
+        startedTime: 'start',
+        completedTime: 'end',
+        runDurationMs: 1000
+      }
+
+      SpySlackSend.mockResolvedValueOnce(null)
+      await expect(slackBroadCast.sendSlackNotification(sampleProgress)).resolves.toBe(undefined)
+
+      const sendPayload = SpySlackSend.mock.calls[SpySlackSend.mock.calls.length - 1][0]
+      expect(sendPayload.blocks[1].accessory.alt_text).toBe('PASSED')
+      expect(sendPayload.blocks[1].text.text).toContain('Skipped assertions')
+    })
+
+    it('When failed notification webhook is configured and failures exist, it should send failed tests report', async () => {
+      config.slackWebhookUrl = null
+      config.slackWebhookUrlForFailed = 'http://failed_url'
+      sampleProgress.runtimeInformation = {
+        totalFailedAssertions: 1
+      }
+
+      SpySlackSend.mockResolvedValueOnce(null)
+      await expect(slackBroadCast.sendSlackNotification(sampleProgress)).resolves.toBe(undefined)
+
+      expect(SpySlackSend).toHaveBeenCalledWith(expect.objectContaining({
+        text: 'Failed Tests Report',
+        blocks: expect.any(Array)
+      }))
+    })
+
+    it('When webhook send fails, it should swallow error and log it', async () => {
+      const consoleSpy = jest.spyOn(console, 'log').mockImplementation(() => {})
+      config.slackWebhookUrl = 'http://some_url'
+      config.slackWebhookUrlForFailed = null
+      sampleProgress.runtimeInformation = {
+        startedTime: 'start',
+        completedTime: 'end',
+        runDurationMs: 1000
+      }
+
+      SpySlackSend.mockRejectedValueOnce(new Error('send-failed'))
+      await expect(slackBroadCast.sendSlackNotification(sampleProgress)).resolves.toBe(undefined)
+
+      expect(consoleSpy).toHaveBeenCalledWith('ERROR: Sending Slack notification failed. ', 'send-failed')
+      consoleSpy.mockRestore()
+    })
   })
 
   describe('needToNotifyFailed Tests -->', () => {
@@ -158,6 +241,37 @@ describe('Cli client', () => {
         runtimeInformation: {
           totalAssertions: 1,
           totalPassedAssertions: 0
+        }
+      })).toBe(true)
+    })
+
+    it('should NOT notify when failures are zero after skipped assertions are excluded', () => {
+      expect(slackBroadCast.needToNotifyFailed('url', {
+        runtimeInformation: {
+          totalAssertions: 3,
+          totalPassedAssertions: 2,
+          totalSkippedAssertions: 1
+        }
+      })).toBe(false)
+    })
+
+    it('should honor totalFailedAssertions when provided', () => {
+      expect(slackBroadCast.needToNotifyFailed('url', {
+        runtimeInformation: {
+          totalFailedAssertions: 0
+        }
+      })).toBe(false)
+      expect(slackBroadCast.needToNotifyFailed('url', {
+        runtimeInformation: {
+          totalFailedAssertions: 2
+        }
+      })).toBe(true)
+    })
+
+    it('should notify when runtime information exists but totals are not usable', () => {
+      expect(slackBroadCast.needToNotifyFailed('url', {
+        runtimeInformation: {
+          totalAssertions: 'unknown'
         }
       })).toBe(true)
     })
