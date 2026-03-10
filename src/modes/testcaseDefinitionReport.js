@@ -24,6 +24,9 @@
 
  * ModusBox
  * Georgi Logodazhki <georgi.logodazhki@modusbox.com> (Original Author)
+
+ * Infitx
+ * Vijaya Kumar Guthi <vijaya.guthi@infitx.com>
  --------------
  ******/
 
@@ -32,6 +35,8 @@ const fStr = require('node-strings')
 const utils = require('../utils/file-utils.js')
 const objectStore = require('../objectStore')
 const templateGenerator = require('../utils/templateGenerator')
+const { EXIT_CODES } = require('../constants')
+const { completeRun } = require('../utils/run-completion')
 
 const download = async () => {
   const config = objectStore.get('config')
@@ -39,6 +44,9 @@ const download = async () => {
     const inputFiles = config.inputFiles.split(',')
     const selectedLabels = config.labels ? config.labels.split(',') : null
     const template = await templateGenerator.generateTemplate(inputFiles, selectedLabels)
+    if (!template || !Array.isArray(template.test_cases)) {
+      throw new Error('Invalid testcase template. Ensure input files contain valid test case JSON with test_cases array')
+    }
     if (config.environmentFile) {
       const environmentFileContent = await utils.readFileAsync(config.environmentFile, 'utf8')
       const environmentFileContentObj = JSON.parse(environmentFileContent)
@@ -47,11 +55,20 @@ const download = async () => {
     }
     await report.testcaseDefinition(template)
     console.log(fStr.green('Terminate with exit code 0'))
-    process.exit(0)
+    completeRun({
+      code: EXIT_CODES.success,
+      status: 'FINISHED',
+      reason: 'testcase_definition_report_generated'
+    })
   } catch (err) {
     console.log(err)
     console.log(fStr.red('Terminate with exit code 1'))
-    process.exit(1)
+    completeRun({
+      code: EXIT_CODES.failure,
+      status: 'FAILED',
+      reason: 'testcase_definition_report_failed',
+      error: err
+    })
   }
 }
 

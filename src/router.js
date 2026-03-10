@@ -24,6 +24,9 @@
 
  * ModusBox
  * Georgi Logodazhki <georgi.logodazhki@modusbox.com> (Original Author)
+
+ * Infitx
+ * Vijaya Kumar Guthi <vijaya.guthi@infitx.com>
  --------------
  ******/
 
@@ -32,6 +35,7 @@ const _ = require('lodash')
 const { TraceHeaderUtils } = require('@mojaloop/ml-testing-toolkit-shared-lib')
 const { EXIT_CODES, TESTS_EXECUTION_TIMEOUT } = require('./constants')
 const objectStore = require('./objectStore')
+const { completeRun } = require('./utils/run-completion')
 
 const cli = (commanderOptions) => {
   const configFile = {
@@ -45,7 +49,7 @@ const cli = (commanderOptions) => {
     saveReportBaseUrl: null
   }
 
-  if (fs.existsSync(commanderOptions.config)) {
+  if (commanderOptions.config && fs.existsSync(commanderOptions.config)) {
     const newConfig = JSON.parse(fs.readFileSync(commanderOptions.config, 'utf8'))
     _.merge(configFile, newConfig)
   }
@@ -72,7 +76,9 @@ const cli = (commanderOptions) => {
     extraSummaryInformation: commanderOptions.extraSummaryInformation || configFile.extraSummaryInformation,
     briefSummaryPrefix: commanderOptions.briefSummaryPrefix || configFile.briefSummaryPrefix,
     labels: commanderOptions.labels || configFile.labels,
-    batchSize: commanderOptions.batchSize || configFile.batchSize || parseInt(process.env.TESTCASES_BATCH_SIZE, 10)
+    batchSize: commanderOptions.batchSize || configFile.batchSize || parseInt(process.env.TESTCASES_BATCH_SIZE, 10),
+    exitOnComplete: commanderOptions.exitOnComplete !== false,
+    onComplete: commanderOptions.onComplete
   }
 
   objectStore.set('config', config)
@@ -88,18 +94,34 @@ const cli = (commanderOptions) => {
           const sessionId = TraceHeaderUtils.generateSessionId()
           require('./utils/listeners').outbound(sessionId)
           const { sendTemplate, handleTimeout } = require('./modes/outbound')
-          sendTemplate(sessionId)
+          Promise.resolve(sendTemplate(sessionId)).catch((err) => {
+            console.log('error in sendTemplate:', err)
+            completeRun({
+              code: EXIT_CODES.failure,
+              reason: 'send_template_failed',
+              error: err
+            })
+          })
           setTimeout(async () => {
             await handleTimeout()
-            process.exit(EXIT_CODES.timeout)
+            completeRun({
+              code: EXIT_CODES.timeout,
+              reason: 'tests_execution_timeout'
+            })
           }, TESTS_EXECUTION_TIMEOUT)
         } else {
           console.log('error: required option \'-e, --environment-file <environmentFile>\' not specified')
-          process.exit(1)
+          completeRun({
+            code: EXIT_CODES.failure,
+            reason: 'missing_environment_file'
+          })
         }
       } else {
         console.log('error: required option \'-i, --input-files <inputFiles>\' not specified')
-        process.exit(1)
+        completeRun({
+          code: EXIT_CODES.failure,
+          reason: 'missing_input_files'
+        })
       }
       break
     case 'testcaseDefinitionReport':
@@ -111,13 +133,19 @@ const cli = (commanderOptions) => {
         require('./modes/testcaseDefinitionReport').download()
       } else {
         console.log('error: required option \'-i, --input-files <inputFiles>\' not specified')
-        process.exit(1)
+        completeRun({
+          code: EXIT_CODES.failure,
+          reason: 'missing_input_files'
+        })
       }
       break
     default:
       console.log('Mode is not supported')
       console.log('Terminate with exit code 1')
-      process.exit(1)
+      completeRun({
+        code: EXIT_CODES.failure,
+        reason: 'unsupported_mode'
+      })
   }
 }
 

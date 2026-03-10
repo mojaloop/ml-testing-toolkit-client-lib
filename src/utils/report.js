@@ -31,7 +31,6 @@ const axios = require('axios').default
 const fs = require('fs')
 const { promisify } = require('util')
 const objectStore = require('../objectStore')
-const s3Upload = require('../extras/s3-upload')
 
 const outbound = async (data) => {
   const testcaseReport = await report(data, 'testcase')
@@ -104,6 +103,7 @@ const report = async (data, reportType) => {
         break
       }
       case 's3': {
+        const s3Upload = require('../extras/s3-upload')
         const uploadedReportURL = await s3Upload.uploadFileDataToS3('s3://' + writeFileName, reportData, config.s3)
         returnInfo.uploadedReportURL = uploadedReportURL
         break

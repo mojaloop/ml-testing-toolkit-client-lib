@@ -24,6 +24,9 @@
 
  * ModusBox
  * Georgi Logodazhki <georgi.logodazhki@modusbox.com> (Original Author)
+
+ * Infitx
+ * Vijaya Kumar Guthi <vijaya.guthi@infitx.com>
  --------------
  ******/
 const axios = require('axios').default
@@ -37,7 +40,8 @@ const slackBroadcast = require('../extras/slack-broadcast')
 const releaseCd = require('../extras/release-cd')
 const TemplateGenerator = require('../utils/templateGenerator')
 const { TraceHeaderUtils } = require('@mojaloop/ml-testing-toolkit-shared-lib')
-const { TESTS_EXECUTION_TIMEOUT } = require('../constants')
+const { EXIT_CODES, TESTS_EXECUTION_TIMEOUT } = require('../constants')
+const { completeRun } = require('../utils/run-completion')
 
 const totalProgress = {
   totalTestCases: 0,
@@ -155,30 +159,25 @@ const printProgress = (progress) => {
 
 const sendTemplate = async (sessionId) => {
   const config = objectStore.get('config')
-  try {
-    const readFileAsync = promisify(fs.readFile)
+  const readFileAsync = promisify(fs.readFile)
 
-    // Calculate the outbound request ID based on sessionId for catching progress notifications
-    const traceIdPrefix = TraceHeaderUtils.getTraceIdPrefix()
-    const currentEndToEndId = TraceHeaderUtils.generateEndToEndId()
-    const outboundRequestID = traceIdPrefix + sessionId + currentEndToEndId
+  // Calculate the outbound request ID based on sessionId for catching progress notifications
+  const traceIdPrefix = TraceHeaderUtils.getTraceIdPrefix()
+  const currentEndToEndId = TraceHeaderUtils.generateEndToEndId()
+  const outboundRequestID = traceIdPrefix + sessionId + currentEndToEndId
 
-    const inputFiles = config.inputFiles.split(',')
-    const selectedLabels = config.labels ? config.labels.split(',') : []
-    const template = await TemplateGenerator.generateTemplate(inputFiles, selectedLabels)
-    const environmentFileObj = JSON.parse(await readFileAsync(config.environmentFile, 'utf8'))
-    template.inputValues = environmentFileObj.inputValues
-    template.options = environmentFileObj.options || {}
-    template.saveReport = config.saveReport
-    template.name = determineTemplateName(inputFiles)
-    template.options.breakOnError = (config.breakRunOnError === 'true')
-    if (config.batchSize) template.batchSize = config.batchSize
+  const inputFiles = config.inputFiles.split(',')
+  const selectedLabels = config.labels ? config.labels.split(',') : []
+  const template = await TemplateGenerator.generateTemplate(inputFiles, selectedLabels)
+  const environmentFileObj = JSON.parse(await readFileAsync(config.environmentFile, 'utf8'))
+  template.inputValues = environmentFileObj.inputValues
+  template.options = environmentFileObj.options || {}
+  template.saveReport = config.saveReport
+  template.name = determineTemplateName(inputFiles)
+  template.options.breakOnError = (config.breakRunOnError === 'true')
+  if (config.batchSize) template.batchSize = config.batchSize
 
-    await axios.post(`${config.baseURL}/api/outbound/template/` + outboundRequestID, template, { headers: { 'Content-Type': 'application/json' } })
-  } catch (err) {
-    console.log('error in sendTemplate:', err)
-    process.exit(1)
-  }
+  await axios.post(`${config.baseURL}/api/outbound/template/` + outboundRequestID, template, { headers: { 'Content-Type': 'application/json' } })
 }
 
 /**
@@ -245,14 +244,37 @@ const handleIncomingProgress = async (progress) => {
     }
     if (passed) {
       console.log(fStr.green('Terminate with exit code 0'))
-      process.exit(0)
+      completeRun({
+        code: EXIT_CODES.success,
+        status: 'FINISHED',
+        reason: 'outbound_finished',
+        details: {
+          passed,
+          result: progress.totalResult
+        }
+      })
     } else {
       console.log(fStr.red('Terminate with exit code 1'))
-      process.exit(1)
+      completeRun({
+        code: EXIT_CODES.failure,
+        status: 'FINISHED',
+        reason: 'outbound_finished',
+        details: {
+          passed,
+          result: progress.totalResult
+        }
+      })
     }
   } else if (progress.status === 'TERMINATED') {
     console.log(fStr.red('Terminate with exit code 1'))
-    process.exit(1)
+    completeRun({
+      code: EXIT_CODES.failure,
+      status: 'TERMINATED',
+      reason: 'outbound_terminated',
+      details: {
+        result: progress
+      }
+    })
   } else {
     updateTotalProgressCounts(progress)
     printProgress(progress)

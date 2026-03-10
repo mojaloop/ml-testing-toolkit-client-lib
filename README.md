@@ -46,6 +46,12 @@ Or, you can install `@mojaloop/ml-testing-toolkit-client-lib` locally, for use i
 npm install @mojaloop/ml-testing-toolkit-client-lib --save-dev
 ```
 
+You can also install it as a regular runtime dependency when using the programmatic API:
+
+```bash
+npm install @mojaloop/ml-testing-toolkit-client-lib --save
+```
+
 *Note: To run the preceding commands, [Node.js](http://nodejs.org) and [npm](https://npmjs.com) must be installed.*
 
 #### 1.2 Usage
@@ -55,6 +61,27 @@ After you've installed `@mojaloop/ml-testing-toolkit-client-lib`, you should be 
 ml-ttk-cli
 ```
 **_If this command is not found, you should add the folder path of npm global modules to your PATH._
+
+#### 1.3 Programmatic Usage (Library)
+
+This package can be imported directly in another Node.js service.
+
+```javascript
+const { run } = require('@mojaloop/ml-testing-toolkit-client-lib')
+
+run({
+  mode: 'outbound',
+  baseUrl: 'http://localhost:5050',
+  inputFiles: 'examples/collections/dfsp/p2p_happy_path.json',
+  environmentFile: 'examples/environments/dfsp_local_environment.json',
+  reportFormat: 'json'
+}).then((result) => {
+  // result: { code, mode, status, reason, error?, details? }
+  console.log(result)
+})
+```
+
+`run(options)` uses the same options as the CLI (camelCase names matching Commander option keys).
 
 ### 2. Command Reference
 

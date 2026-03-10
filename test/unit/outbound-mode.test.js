@@ -24,6 +24,9 @@
 
  * ModusBox
  * Georgi Logodazhki <georgi.logodazhki@modusbox.com> (Original Author)
+
+ * Infitx
+ * Vijaya Kumar Guthi <vijaya.guthi@infitx.com>
  --------------
  ******/
 'use strict'
@@ -193,7 +196,7 @@ describe('Cli client', () => {
       objectStore.set('config', config)
 
       spyAxios.mockReturnValue({})
-      await expect(outbound.sendTemplate()).resolves.toBe(undefined)
+      await expect(outbound.sendTemplate()).rejects.toBeDefined()
     })
   })
   describe('run determineTemplateName', () => {
