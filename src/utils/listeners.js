@@ -34,6 +34,7 @@ const objectStore = require('../objectStore')
 const outbound = (sessionId) => {
   const config = objectStore.get('config')
   const socket = socketIOClient(config.baseURL)
+  objectStore.set('config', { ...config, activeSocket: socket })
   socket.on('outboundProgress/' + sessionId, outboundMode.handleIncomingProgress)
   console.log(`Listening on ${config.baseURL} outboundProgress events...`)
 }
@@ -41,6 +42,7 @@ const outbound = (sessionId) => {
 const monitoring = () => {
   const config = objectStore.get('config')
   const socket = socketIOClient(config.baseURL)
+  objectStore.set('config', { ...config, activeSocket: socket })
   socket.on('newLog', monitoringMode.handleIncomingProgress)
   console.log(`Listening on ${config.baseURL} newLog events...`)
 }

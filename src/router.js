@@ -102,13 +102,17 @@ const cli = (commanderOptions) => {
               error: err
             })
           })
-          setTimeout(async () => {
+          const timeoutHandle = setTimeout(async () => {
             await handleTimeout()
             completeRun({
               code: EXIT_CODES.timeout,
               reason: 'tests_execution_timeout'
             })
           }, TESTS_EXECUTION_TIMEOUT)
+          objectStore.set('config', {
+            ...objectStore.get('config'),
+            timeoutHandle
+          })
         } else {
           console.log('error: required option \'-e, --environment-file <environmentFile>\' not specified')
           completeRun({

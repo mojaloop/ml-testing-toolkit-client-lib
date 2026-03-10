@@ -39,6 +39,19 @@ const completeRun = ({
 } = {}) => {
   const config = objectStore.get('config')
 
+  if (config.timeoutHandle) {
+    clearTimeout(config.timeoutHandle)
+  }
+
+  if (config.activeSocket) {
+    if (typeof config.activeSocket.removeAllListeners === 'function') {
+      config.activeSocket.removeAllListeners()
+    }
+    if (typeof config.activeSocket.close === 'function') {
+      config.activeSocket.close()
+    }
+  }
+
   if (config._completed) {
     return config._completionResult
   }
