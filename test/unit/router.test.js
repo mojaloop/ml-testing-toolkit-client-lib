@@ -30,9 +30,14 @@
  ******/
 'use strict'
 
+const fs = require('node:fs')
+const os = require('node:os')
+const path = require('node:path')
 const spyExit = jest.spyOn(process, 'exit').mockImplementation(() => {})
 const { cli } = require('../../src/router')
 const { EXIT_CODES, TESTS_EXECUTION_TIMEOUT } = require('../../src/constants');
+const listeners = require('../../src/utils/listeners')
+const outboundMode = require('../../src/modes/outbound')
 
 jest.mock('../../src/utils/listeners')
 jest.mock('../../src/modes/outbound')
@@ -62,6 +67,20 @@ describe('Cli client', () => {
         cli(config)
       }).not.toThrow()
     })
+    it('when config file is provided it should load values from file', async () => {
+      const tempConfigPath = path.join(os.tmpdir(), `ml-ttk-router-${Date.now()}.json`)
+      fs.writeFileSync(tempConfigPath, JSON.stringify({ mode: 'monitoring' }), 'utf8')
+      spyExit.mockImplementationOnce(jest.fn())
+
+      try {
+        expect(() => {
+          cli({ config: tempConfigPath })
+        }).not.toThrow()
+        expect(listeners.monitoring).toHaveBeenCalled()
+      } finally {
+        fs.unlinkSync(tempConfigPath)
+      }
+    })
     it('when mode is outbound and inputFiles is provided should not throw an error', async () => {
       const config = {
         "mode": "outbound",
@@ -85,6 +104,22 @@ describe('Cli client', () => {
       }).not.toThrow()
       await jest.advanceTimersByTime(TESTS_EXECUTION_TIMEOUT)
       expect(spyExit).toHaveBeenCalledWith(EXIT_CODES.timeout)
+    })
+    it('when sendTemplate fails it should terminate with failure code', async () => {
+      const config = {
+        mode: 'outbound',
+        inputFiles: 'test',
+        environmentFile: 'test'
+      }
+      outboundMode.sendTemplate.mockRejectedValueOnce(new Error('send failed'))
+      spyExit.mockImplementationOnce(jest.fn())
+
+      expect(() => {
+        cli(config)
+      }).not.toThrow()
+
+      await Promise.resolve()
+      expect(spyExit).toHaveBeenCalledWith(EXIT_CODES.failure)
     })
     it('when mode is outbound and inputFile was not provided should not throw an error', async () => {
       const config = {

@@ -47,4 +47,23 @@ describe('Library entrypoint', () => {
     }))
     expect(result).toEqual({ code: 0, status: 'SUCCESS', reason: 'done' })
   })
+
+  it('run should invoke user-provided onComplete callback', async () => {
+    const userOnComplete = jest.fn()
+    jest.spyOn(router, 'cli').mockImplementationOnce(({ onComplete }) => {
+      onComplete({ code: 0, status: 'SUCCESS', reason: 'done' })
+    })
+
+    await run({ mode: 'monitoring', onComplete: userOnComplete })
+
+    expect(userOnComplete).toHaveBeenCalledWith({ code: 0, status: 'SUCCESS', reason: 'done' })
+  })
+
+  it('run should reject when router throws', async () => {
+    jest.spyOn(router, 'cli').mockImplementationOnce(() => {
+      throw new Error('router failure')
+    })
+
+    await expect(run({ mode: 'monitoring' })).rejects.toThrow('router failure')
+  })
 })
