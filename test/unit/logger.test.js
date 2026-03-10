@@ -230,6 +230,8 @@ describe('Cli client', () => {
       expect(() => {
         logger.outbound(sampleOutboundProgress)
       }).not.toThrow()
+      const summaryCall = spyConsole.mock.calls.find(call => typeof call[0] === 'string' && call[0].includes('SUMMARY'))
+      expect(summaryCall[0]).toContain('Skipped assertions')
     })
     it('when extraSummaryInformation is supplied, it should be logged', async () => {
       objectStore.get.mockReturnValueOnce({
@@ -237,6 +239,51 @@ describe('Cli client', () => {
       })
       logger.outbound(sampleOutboundProgress)
       expect(spyConsole).toHaveBeenCalled()
+    })
+    it('should treat skipped assertions separately from passed and failed', async () => {
+      const sampleWithSkippedAssertions = JSON.parse(JSON.stringify(sampleOutboundProgress))
+      sampleWithSkippedAssertions.test_cases[0].requests[1].request.tests.assertions[1].resultStatus.status = 'SKIPPED'
+      sampleWithSkippedAssertions.test_cases[0].requests[1].request.tests.passedAssertionsCount = 2
+
+      objectStore.get.mockReturnValueOnce({})
+      const outboundResult = logger.outbound(sampleWithSkippedAssertions)
+
+      expect(outboundResult).toBe(true)
+      const summaryCall = spyConsole.mock.calls.find(call => typeof call[0] === 'string' && call[0].includes('SUMMARY'))
+      expect(summaryCall[0]).toContain('Passed assertions')
+      expect(summaryCall[0]).toContain('3')
+      expect(summaryCall[0]).toContain('Skipped assertions')
+      expect(summaryCall[0]).toContain('1')
+      expect(summaryCall[0]).toContain('Failed assertions')
+      expect(summaryCall[0]).toContain('0')
+    })
+    it('should handle requests without assertions array using fallback counters', async () => {
+      const sampleWithFallbackCounters = JSON.parse(JSON.stringify(sampleOutboundProgress))
+      sampleWithFallbackCounters.test_cases[0].requests = [
+        {
+          request: {
+            description: 'Fallback request',
+            method: 'get',
+            operationPath: '/fallback',
+            tests: {
+              passedAssertionsCount: 1,
+              skippedAssertionsCount: 1
+            }
+          }
+        }
+      ]
+
+      objectStore.get.mockReturnValueOnce({})
+      const outboundResult = logger.outbound(sampleWithFallbackCounters)
+
+      expect(outboundResult).toBe(true)
+      const summaryCall = spyConsole.mock.calls.find(call => typeof call[0] === 'string' && call[0].includes('SUMMARY'))
+      expect(summaryCall[0]).toContain('Passed assertions')
+      expect(summaryCall[0]).toContain('1')
+      expect(summaryCall[0]).toContain('Skipped assertions')
+      expect(summaryCall[0]).toContain('1')
+      expect(summaryCall[0]).toContain('Failed assertions')
+      expect(summaryCall[0]).toContain('0')
     })
     it('when the cli mode is monitoring should not throw an error 1', async () => {
       const sampleMonitoringProgress = {

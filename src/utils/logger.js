@@ -33,6 +33,8 @@ const objectStore = require('../objectStore')
 const outbound = (progress) => {
   let totalAssertionsCount = 0
   let totalPassedAssertionsCount = 0
+  let totalSkippedAssertionsCount = 0
+  let totalFailedAssertionsCount = 0
   let totalRequestsCount = 0
   const testCasesTag = '--------------------FINAL REPORT--------------------'
   console.log('\n' + fStr.yellow(testCasesTag))
@@ -40,10 +42,22 @@ const outbound = (progress) => {
     console.log(fStr.yellow(testCase.name))
     totalRequestsCount += testCase.requests.length
     testCase.requests.forEach(req => {
-      const passedAssertionsCount = (req.request.tests && req.request.tests.passedAssertionsCount) ? req.request.tests.passedAssertionsCount : 0
       const assertionsCount = (req.request.tests && req.request.tests.assertions) ? req.request.tests.assertions.length : 0
+      const passedAssertionsCount = (req.request.tests && req.request.tests.assertions)
+        ? req.request.tests.assertions.filter(assertion => assertion.resultStatus && assertion.resultStatus.status === 'SUCCESS').length
+        : (req.request.tests && Number.isInteger(req.request.tests.passedAssertionsCount))
+            ? req.request.tests.passedAssertionsCount
+            : 0
+      const skippedAssertionsCount = (req.request.tests && Number.isInteger(req.request.tests.skippedAssertionsCount))
+        ? req.request.tests.skippedAssertionsCount
+        : (req.request.tests && req.request.tests.assertions)
+            ? req.request.tests.assertions.filter(assertion => assertion.resultStatus && assertion.resultStatus.status === 'SKIPPED').length
+            : 0
+      const failedAssertionsCount = Math.max(assertionsCount - passedAssertionsCount - skippedAssertionsCount, 0)
       totalAssertionsCount += assertionsCount
       totalPassedAssertionsCount += passedAssertionsCount
+      totalSkippedAssertionsCount += skippedAssertionsCount
+      totalFailedAssertionsCount += failedAssertionsCount
       const logMessage = `\t${
         req.request.description} - ${
         req.request.method.toUpperCase()} - ${
@@ -68,7 +82,8 @@ const outbound = (progress) => {
     [{ colSpan: 2, content: 'SUMMARY', hAlign: 'center' }],
     { 'Total assertions': totalAssertionsCount },
     { 'Passed assertions': totalPassedAssertionsCount },
-    { 'Failed assertions': totalAssertionsCount - totalPassedAssertionsCount },
+    { 'Skipped assertions': totalSkippedAssertionsCount },
+    { 'Failed assertions': totalFailedAssertionsCount },
     { 'Total requests': totalRequestsCount },
     { 'Total test cases': progress.test_cases.length },
     { 'Passed percentage': `${(100 * (totalPassedAssertionsCount / totalAssertionsCount)).toFixed(2)}%` },
@@ -78,7 +93,7 @@ const outbound = (progress) => {
   )
   console.log(summary.toString())
 
-  const passed = totalPassedAssertionsCount === totalAssertionsCount
+  const passed = totalFailedAssertionsCount === 0
   return passed
 }
 
