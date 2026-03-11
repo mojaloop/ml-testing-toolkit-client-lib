@@ -109,10 +109,15 @@ const generateSlackBlocks = (progress, reportURL) => {
 
   if (config.briefSummaryPrefix) {
     const top5FailedTestCases = failedTestCases.sort((a, b) => b.failedAssertions - a.failedAssertions).slice(0, 5)
+    const runtimeTotalAssertions = (PRTI.failedAssertions || 0) + (PRTI.passedAssertions || 0) + (PRTI.skippedAssertions || 0)
 
     const failedStr = totalAssertionsCount
       ? `${totalFailedAssertionsCount}/${totalAssertionsCount}(${(100 * (totalFailedAssertionsCount / totalAssertionsCount)).toFixed(2)}%)`
-      : `${PRTI.failedAssertions || 0}/${PRTI.failedAssertions + PRTI.passedAssertions + PRTI.skippedAssertions}(-%)`
+      : `${PRTI.failedAssertions || 0}/${runtimeTotalAssertions}(-%)`
+
+    const skippedStr = totalAssertionsCount
+      ? `${totalSkippedAssertionsCount}/${totalAssertionsCount}(${(100 * (totalSkippedAssertionsCount / totalAssertionsCount)).toFixed(2)}%)`
+      : `${PRTI.skippedAssertions || 0}/${runtimeTotalAssertions}(-%)`
 
     const testCountStr = `${progress.test_cases?.length || PRTI.totalTestCases || 0}`
 
@@ -131,6 +136,8 @@ const generateSlackBlocks = (progress, reportURL) => {
           { type: 'text', text: reqCountStr, style: { code: true } },
           { type: 'text', text: ', failed: ' },
           { type: 'text', text: failedStr, style: { code: true } },
+          { type: 'text', text: ', skipped: ' },
+          { type: 'text', text: skippedStr, style: { code: true } },
           { type: 'text', text: ', duration: ' },
           { type: 'text', text: millisecondsToTime(progress.runtimeInformation.runDurationMs), style: { code: true } },
           top5FailedTestCases.length > 0 && { type: 'text', text: ', top 5 failed test cases:' }
