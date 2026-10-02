@@ -131,6 +131,11 @@ ignore:
     reason: >-
       Base image npm package: undici - bundled in Node.js base image, not fixable via application dependencies as of
       2026-10-02 (low severity)
+  - vulnerability: GHSA-2g4f-4pwh-qvx6
+    include-aliases: true
+    reason: >-
+      ajv 6.12.3 under har-validator (dev-only request-mocking chain): har-validator pins the 6.12.x line and accepts no
+      upgrade; already allowlisted in audit-ci.jsonc on main (as of 2026-10-02, moderate severity)
 output:
   - table
   - json
