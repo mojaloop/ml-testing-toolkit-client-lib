@@ -185,22 +185,6 @@ ignore:
     reason: >-
       braces 3.0.3 stack-exhaustion ReDoS - dev-only transitive via @mojaloop/api-snippets > ts-auto-mock > micromatch;
       no patched release of braces 3.x exists as of 2026-10-16; also allowlisted in audit-ci.jsonc
-  - vulnerability: GHSA-qxc2-j82w-r537
-    include-aliases: true
-    reason: >-
-      @faker-js/faker held at 9.9.0; the fixed 10.5 line is ESM-only and cannot load under jest 29; also allowlisted in
-      audit-ci.jsonc
-  - vulnerability: GHSA-g8qq-57p8-ggw5
-    include-aliases: true
-    reason: >-
-      sanitize-html held - 2.17.7 pulls ESM-only htmlparser2 12 which jest 29 (pinned via .ncurc) cannot load; also
-      allowlisted in audit-ci.jsonc
-  - vulnerability: GHSA-jxwj-j7wr-gfrw
-    include-aliases: true
-    reason: sanitize-html - same hold as GHSA-g8qq-57p8-ggw5; also allowlisted in audit-ci.jsonc
-  - vulnerability: GHSA-vccv-cmxp-4j9h
-    include-aliases: true
-    reason: sanitize-html - same hold as GHSA-g8qq-57p8-ggw5; also allowlisted in audit-ci.jsonc
 output:
   - table
   - json

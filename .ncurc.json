@@ -1,10 +1,6 @@
 {
   "reject": [
-    "@mojaloop/ml-testing-toolkit-shared-lib",
-    "why-shared-lib: carried over from the js config (faker issues); 14.3.4+ also floats @apidevtools/json-schema-ref-parser onto the ESM-only 15.x line",
     "@types/node",
-    "why-types-node: its major must match the Node runtime major in .nvmrc (24); a higher major only weakens type checking; bump together with the runtime",
-    "commander",
-    "why-commander: 15.x resolves to an ESM entry that the CLI test requires through jest, failing 'Cli client > running the client should not throw an error' with 'Must use import to load ES Module' even under --experimental-vm-modules; hold at 14.0.3 (reproduced 2026-10-02, same hold as transaction-requests-service and quoting-service)"
+    "why-types-node: its major must match the Node runtime major in .nvmrc (24); a higher major only weakens type checking; bump together with the runtime"
   ]
 }
