@@ -5,7 +5,7 @@ ARG NODE_VERSION="22.22.0-alpine3.23"
 #  export NODE_VERSION="$(cat .nvmrc)-alpine" \
 #  docker build \
 #    --build-arg NODE_VERSION=$NODE_VERSION \
-#    -t mojaloop/sdk-scheme-adapter:local \
+#    -t mojaloop/ml-testing-toolkit-client-lib:local \
 #    . \
 #
 
