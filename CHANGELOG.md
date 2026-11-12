@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.12.4](https://github.com/mojaloop/ml-testing-toolkit-client-lib/compare/v1.12.3...v1.12.4) (2026-11-12)
+
+
+### Bug Fixes
+
+* **security:** patch vulnerabilities + update deps, orb, docker ([#56](https://github.com/mojaloop/ml-testing-toolkit-client-lib/issues/56)) ([deba8bb](https://github.com/mojaloop/ml-testing-toolkit-client-lib/commit/deba8bbf6cb129cee0ab55ed5c28208e4f4edbce))
+
+
+### Chore
+
+* **sbom:** update sbom [skip ci] ([cd3600b](https://github.com/mojaloop/ml-testing-toolkit-client-lib/commit/cd3600bff777d6076a907d8804b699f9cf91efda))
+
 ### [1.12.3](https://github.com/mojaloop/ml-testing-toolkit-client-lib/compare/v1.12.2...v1.12.3) (2026-02-26)
 
 
